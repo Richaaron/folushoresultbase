@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduResult Pro – School Result Computing System</title>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="page active">
+    <div class="login-bg">
+      <div class="login-card">
+        <div class="login-logo">
+          <i class="fas fa-graduation-cap"></i>
+          <h1>EduResult Pro</h1>
+          <p>School Result Computing System</p>
+        </div>
+        <form id="loginForm">
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Username</label>
+            <input type="text" id="loginUsername" placeholder="Enter username" required/>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <div class="pass-wrap">
+              <input type="password" id="loginPassword" placeholder="Enter password" required/>
+              <span class="eye-toggle" onclick="togglePass()"><i class="fas fa-eye" id="eyeIcon"></i></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-school"></i> School Level</label>
+            <select id="loginLevel">
+              <option value="nursery">Nursery School</option>
+              <option value="primary">Primary School</option>
+              <option value="secondary">Secondary School</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+          <p class="login-hint">Default: admin / admin123</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainApp" class="page">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-graduation-cap"></i>
+        <span>EduResult Pro</span>
+      </div>
+      <div class="sidebar-school-info">
+        <i class="fas fa-school"></i>
+        <span id="sidebarLevel">Nursery School</span>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li class="nav-section-title">MANAGEMENT</li>
+          <li><a href="#" class="nav-link" data-section="school-settings"><i class="fas fa-cog"></i> School Settings</a></li>
+          <li><a href="#" class="nav-link" data-section="classes"><i class="fas fa-chalkboard"></i> Classes</a></li>
+          <li><a href="#" class="nav-link" data-section="students"><i class="fas fa-user-graduate"></i> Students</a></li>
+          <li><a href="#" class="nav-link" data-section="subjects"><i class="fas fa-book"></i> Subjects</a></li>
+          <li class="nav-section-title">ACADEMICS</li>
+          <li><a href="#" class="nav-link" data-section="enter-scores"><i class="fas fa-pen-nib"></i> Enter Scores</a></li>
+          <li><a href="#" class="nav-link" data-section="compute-results"><i class="fas fa-calculator"></i> Compute Results</a></li>
+          <li><a href="#" class="nav-link" data-section="view-results"><i class="fas fa-list-alt"></i> View Results</a></li>
+          <li><a href="#" class="nav-link" data-section="report-card"><i class="fas fa-file-alt"></i> Report Card</a></li>
+          <li class="nav-section-title">SYSTEM</li>
+          <li><a href="#" class="nav-link" data-section="users"><i class="fas fa-users-cog"></i> Users</a></li>
+          <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+      <!-- TOP NAR -->
+      <header class="topbar">
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-right">
+          <span id="currentTerm"></span>
+          <span id="currentSession"></span>
+          <div class="user-badge"><i class="fas fa-user-circle"></i> <span id="topbarUser">Admin</span></div>
+        </div>
+      </header>
+
+      <!-- SECTIONS -->
+      <div class="content-area">
+
+        <!-- ===== DASHBOARD ===== -->
+        <section id="sec-dashboard" class="section active">
+          <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+          <div class="stats-grid" id="dashboardStats"></div>
+          <div class="dashboard-row">
+            <div class="card dash-card">
+              <h3><i class="fas fa-bell"></i> Quick Actions</h3>
+              <div class="quick-actions">
+                <button class="btn btn-primary" onclick="goTo('enter-scores')"><i class="fas fa-pen-nib"></i> Enter Scores</button>
+                <button class="btn btn-success" onclick="goTo('compute-results')"><i class="fas fa-calculator"></i> Compute Results</button>
+                <button class="btn btn-warning" onclick="goTo('report-card')"><i class="fas fa-file-alt"></i> Print Report Card</button>
+                <button class="btn btn-info" onclick="goTo('students')"><i class="fas fa-user-plus"></i> Add Student</button>
+              </div>
+            </div>
+            <div class="card dash-card">
+              <h3><i class="fas fa-info-circle"></i> Current Session Info</h3>
+              <div id="sessionInfoBox"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== SCHOOL SETTINGS ===== -->
+        <section id="sec-school-settings" class="section">
+          <h2 class="section-title"><i class="fas fa-cog"></i> School Settings</h2>
+          <div class="card">
+            <form id="schoolSettingsForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>School Name</label>
+                  <input type="text" id="ss-name" placeholder="Enter school name"/>
+                </div>
+                <div class="form-group">
+                  <label>School Address</label>
+                  <input type="text" id="ss-address" placeholder="Enter school address"/>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input type="text" id="ss-phone" placeholder="08012345678"/>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="ss-email" placeholder="school@example.com"/>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Academic Session (e.g. 2024/2025)</label>
+                  <input type="text" id="ss-session" placeholder="2024/2025"/>
+                </div>
+                <div class="form-group">
+                  <label>Current Term</label>
+                  <select id="ss-term">
+                    <option value="First Term">First Term</option>
+                    <option value="Second Term">Second Term</option>
+                    <option value="Third Term">Third Term</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Grading System</label>
+                  <select id="ss-grading">
+                    <option value="percentage">Percentage (0–100)</option>
+                    <option value="letter">Letter Grade (A–F)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>School Motto</label>
+                  <input type="text" id="ss-motto" placeholder="e.g. Excellence in Education"/>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label>Score Breakdown</label>
+                  <div class="score-breakdown">
+                    <div class="score-item">
+                      <label>CA1 (Max)</label>
+                      <input type="number" id="sb-ca1" value="10" min="0" max="100"/>
+                    </div>
+                    <div class="score-item">
+                      <label>CA2 (Max)</label>
+                      <input type="number" id="sb-ca2" value="10" min="0" max="100"/>
+                    </div>
+                    <div class="score-item">
+                      <label>CA3 (Max)</label>
+                      <input type="number" id="sb-ca3" value="10" min="0" max="100"/>
+                    </div>
+                    <div class="score-item">
+                      <label>Exam (Max)</label>
+                      <input type="number" id="sb-exam" value="70" min="0" max="100"/>
+                    </div>
+                  </div>
+                  <small class="hint-text">Total must equal 100. Unused components set to 0.</small>
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" onclick="saveSchoolSettings()">
+                <i class="fas fa-save"></i> Save Settings
+              </button>
+            </form>
+          </div>
+
+          <!-- Grading Scale -->
+          <div class="card mt-20">
+            <h3><i class="fas fa-star"></i> Grade Scale Configuration</h3>
+            <div id="gradeScaleContainer">
+              <table class="table" id="gradeTable">
+                <thead>
+                  <tr>
+                    <th>Grade</th>
+                    <th>Min Score</th>
+                    <th>Max Score</th>
+                    <th>Remark</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="gradeTableBody"></tbody>
+              </table>
+              <button class="btn btn-success mt-10" onclick="addGradeRow()"><i class="fas fa-plus"></i> Add Grade</button>
+              <button class="btn btn-primary mt-10" onclick="saveGradeScale()"><i class="fas fa-save"></i> Save Grade Scale</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== CLASSES ===== -->
+        <section id="sec-classes" class="section">
+          <h2 class="section-title"><i class="fas fa-chalkboard"></i> Classes</h2>
+          <div class="card">
+            <h3>Add New Class</h3>
+            <div class="form-inline">
+              <input type="text" id="classNameInput" placeholder="e.g. JSS 1A / Primary 4 / Nursery 1"/>
+              <select id="classLevelInput">
+                <option value="nursery">Nursery</option>
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+              </select>
+              <input type="text" id="classTeacherInput" placeholder="Class Teacher"/>
+              <button class="btn btn-primary" onclick="addClass()"><i class="fas fa-plus"></i> Add Class</button>
+            </div>
+          </div>
+          <div class="card mt-20">
+            <h3>All Classes</h3>
+            <table class="table" id="classesTable">
+              <thead>
+                <tr><th>#</th><th>Class Name</th><th>Level</th><th>Class Teacher</th><th>Students</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="classesTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== STUDENTS ===== -->
+        <section id="sec-students" class="section">
+          <h2 class="section-title"><i class="fas fa-user-graduate"></i> Students</h2>
+          <div class="card">
+            <h3>Add / Edit Student</h3>
+            <input type="hidden" id="studentId"/>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Surname</label>
+                <input type="text" id="std-surname" placeholder="Surname"/>
+              </div>
+              <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="std-firstname" placeholder="First Name"/>
+              </div>
+              <div class="form-group">
+                <label>Other Name</label>
+                <input type="text" id="std-other" placeholder="Other Name"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Admission No.</label>
+                <input type="text" id="std-admno" placeholder="e.g. SCH/2024/001"/>
+              </div>
+              <div class="form-group">
+                <label>Class</label>
+                <select id="std-class"><option value="">-- Select Class --</option></select>
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <select id="std-gender">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="std-dob"/>
+              </div>
+              <div class="form-group">
+                <label>Parent/Guardian Name</label>
+                <input type="text" id="std-parent" placeholder="Parent Name"/>
+              </div>
+              <div class="form-group">
+                <label>Parent Phone</label>
+                <input type="text" id="std-phone" placeholder="08012345678"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label>Home Address</label>
+                <input type="text" id="std-address" placeholder="Home Address"/>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="saveStudent()"><i class="fas fa-save"></i> Save Student</button>
+              <button class="btn btn-secondary" onclick="clearStudentForm()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="card mt-20">
+            <div class="table-toolbar">
+              <h3>All Students</h3>
+              <div class="toolbar-right">
+                <select id="filterStudentClass" onchange="renderStudentsTable()">
+                  <option value="">All Classes</option>
+                </select>
+                <input type="text" id="searchStudent" placeholder="Search student..." oninput="renderStudentsTable()"/>
+              </div>
+            </div>
+            <table class="table" id="studentsTable">
+              <thead>
+                <tr><th>#</th><th>Adm No.</th><th>Name</th><th>Class</th><th>Gender</th><th>Parent</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="studentsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== SUBJECTS ===== -->
+        <section id="sec-subjects" class="section">
+          <h2 class="section-title"><i class="fas fa-book"></i> Subjects</h2>
+          <div class="card">
+            <h3>Add / Edit Subject</h3>
+            <input type="hidden" id="subjectId"/>
+            <div class="form-inline">
+              <input type="text" id="sub-name" placeholder="Subject Name"/>
+              <input type="text" id="sub-code" placeholder="Subject Code (e.g. ENG)"/>
+              <select id="sub-class">
+                <option value="">-- Assign to Class --</option>
+              </select>
+              <select id="sub-category">
+                <option value="compulsory">Compulsory</option>
+                <option value="elective">Elective</option>
+              </select>
+              <button class="btn btn-primary" onclick="saveSubject()"><i class="fas fa-save"></i> Save</button>
+              <button class="btn btn-secondary" onclick="clearSubjectForm()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="card mt-20">
+            <div class="table-toolbar">
+              <h3>All Subjects</h3>
+              <select id="filterSubjectClass" onchange="renderSubjectsTable()">
+                <option value="">All Classes</option>
+              </select>
+            </div>
+            <table class="table">
+              <thead>
+                <tr><th>#</th><th>Subject Name</th><th>Code</th><th>Class</th><th>Category</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="subjectsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== ENTER SCORES ===== -->
+        <section id="sec-enter-scores" class="section">
+          <h2 class="section-title"><i class="fas fa-pen-nib"></i> Enter Scores</h2>
+          <div class="card">
+            <div class="form-inline">
+              <div class="form-group">
+                <label>Select Class</label>
+                <select id="scoreClass" onchange="loadScoreSubjects()">
+                  <option value="">-- Select Class --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Select Subject</label>
+                <select id="scoreSubject" onchange="loadScoreSheet()">
+                  <option value="">-- Select Subject --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Term</label>
+                <select id="scoreTerm">
+                  <option value="First Term">First Term</option>
+                  <option value="Second Term">Second Term</option>
+                  <option value="Third Term">Third Term</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Session</label>
+                <input type="text" id="scoreSession" placeholder="2024/2025"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-20" id="scoreSheetContainer" style="display:none;">
+            <div class="table-toolbar">
+              <h3 id="scoreSheetTitle">Score Sheet</h3>
+              <button class="btn btn-primary" onclick="saveScores()"><i class="fas fa-save"></i> Save Scores</button>
+            </div>
+            <div class="score-header-info" id="scoreHeaderInfo"></div>
+            <div class="table-scroll">
+              <table class="table" id="scoreTable">
+                <thead id="scoreTableHead"></thead>
+                <tbody id="scoreTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== COMPUTE RESULTS ===== -->
+        <section id="sec-compute-results" class="section">
+          <h2 class="section-title"><i class="fas fa-calculator"></i> Compute Results</h2>
+          <div class="card">
+            <div class="form-inline">
+              <div class="form-group">
+                <label>Select Class</label>
+                <select id="computeClass">
+                  <option value="">-- Select Class --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Term</label>
+                <select id="computeTerm">
+                  <option value="First Term">First Term</option>
+                  <option value="Second Term">Second Term</option>
+                  <option value="Third Term">Third Term</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Session</label>
+                <input type="text" id="computeSession" placeholder="2024/2025"/>
+              </div>
+              <button class="btn btn-success" onclick="computeResults()"><i class="fas fa-calculator"></i> Compute Results</button>
+            </div>
+          </div>
+          <div id="computeResultArea" class="mt-20"></div>
+        </section>
+
+        <!-- ===== VIEW RESULTS ===== -->
+        <section id="sec-view-results" class="section">
+          <h2 class="section-title"><i class="fas fa-list-alt"></i> View Class Results</h2>
+          <div class="card">
+            <div class="form-inline">
+              <div class="form-group">
+                <label>Class</label>
+                <select id="viewClass" onchange="loadViewResults()">
+                  <option value="">-- Select Class --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Term</label>
+                <select id="viewTerm" onchange="loadViewResults()">
+                  <option value="First Term">First Term</option>
+                  <option value="Second Term">Second Term</option>
+                  <option value="Third Term">Third Term</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Session</label>
+                <input type="text" id="viewSession" placeholder="2024/2025" oninput="loadViewResults()"/>
+              </div>
+            </div>
+          </div>
+          <div id="viewResultsArea" class="mt-20"></div>
+        </section>
+
+        <!-- ===== REPORT CARD ===== -->
+        <section id="sec-report-card" class="section">
+          <h2 class="section-title"><i class="fas fa-file-alt"></i> Student Report Card</h2>
+          <div class="card no-print">
+            <div class="form-inline">
+              <div class="form-group">
+                <label>Class</label>
+                <select id="rcClass" onchange="loadRCStudents()">
+                  <option value="">-- Select Class --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Student</label>
+                <select id="rcStudent">
+                  <option value="">-- Select Student --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Term</label>
+                <select id="rcTerm">
+                  <option value="First Term">First Term</option>
+                  <option value="Second Term">Second Term</option>
+                  <option value="Third Term">Third Term</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Session</label>
+                <input type="text" id="rcSession" placeholder="2024/2025"/>
+              </div>
+              <button class="btn btn-primary" onclick="generateReportCard()"><i class="fas fa-eye"></i> Generate</button>
+              <button class="btn btn-success" onclick="printReportCard()"><i class="fas fa-print"></i> Print</button>
+            </div>
+          </div>
+          <div id="reportCardArea"></div>
+        </section>
+
+        <!-- ===== USERS ===== -->
+        <section id="sec-users" class="section">
+          <h2 class="section-title"><i class="fas fa-users-cog"></i> Users Management</h2>
+          <div class="card">
+            <h3>Add / Edit User</h3>
+            <input type="hidden" id="userId"/>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="user-name" placeholder="Full Name"/>
+              </div>
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="user-username" placeholder="Username"/>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="user-password" placeholder="Password"/>
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <select id="user-role">
+                  <option value="admin">Admin</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+              </div>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> Save User</button>
+              <button class="btn btn-secondary" onclick="clearUserForm()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+          </div>
+          <div class="card mt-20">
+            <h3>All Users</h3>
+            <table class="table">
+              <thead>
+                <tr><th>#</th><th>Full Name</th><th>Username</th><th>Role</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div><!-- end content-area -->
+    </div><!-- end main-content -->
+  </div><!-- end mainApp -->
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast"></div>
+
+  <!-- MODAL -->
+  <div id="modalOverlay" class="modal-overlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span id="modalTitle">Confirm</span>
+        <button onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
