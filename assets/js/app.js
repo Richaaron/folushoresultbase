@@ -19,32 +19,39 @@ const DB = {
 // INITIALIZATION
 // ============================================================
 function init() {
-  // Set default admin user
-  DB.set('users', [
-    { id: 'u1', name: 'Administrator', username: 'folusho', password: 'victory2024', role: 'admin' }
-  ]);
-  
-  // Set default settings
-  DB.set('settings', {
-    schoolName: 'Folusho Victory Schools',
-    session: '2024/2025',
-    term: 'First Term'
-  });
-  
-  // Set grade scale
-  DB.set('gradeScale', [
-    { grade: 'A', min: 70, max: 100, remark: 'Excellent' },
-    { grade: 'B', min: 60, max: 69, remark: 'Good' },
-    { grade: 'C', min: 50, max: 59, remark: 'Pass' },
-    { grade: 'F', min: 0, max: 49, remark: 'Fail' }
-  ]);
-  
+  // Only set default users if none exist
+  if (!DB.get('users')) {
+    DB.set('users', [
+      { id: 'u1', name: 'Administrator', username: 'folusho', password: 'victory2024', role: 'admin' }
+    ]);
+  }
+
+  // Only set default settings if none exist
+  if (!DB.get('settings')) {
+    DB.set('settings', {
+      schoolName: 'Folusho Victory Schools',
+      session: '2024/2025',
+      term: 'First Term'
+    });
+  }
+
+  // Only set grade scale if none exists
+  if (!DB.get('gradeScale')) {
+    DB.set('gradeScale', [
+      { grade: 'A', min: 70, max: 100, remark: 'Excellent' },
+      { grade: 'B', min: 60, max: 69, remark: 'Good' },
+      { grade: 'C', min: 50, max: 59, remark: 'Pass' },
+      { grade: 'F', min: 0, max: 49, remark: 'Fail' }
+    ]);
+  }
+
   // Only initialize if no data exists
   if (!DB.get('classes') || DB.get('classes').length === 0) {
     DB.set('classes', []);
     DB.set('students', []);
     DB.set('subjects', []);
-    
+    DB.set('scores', []);
+
     // Create default classes with subjects
     var defaultClasses = [
       { name: 'Nursery 1', level: 'nursery' },
@@ -62,12 +69,11 @@ function init() {
       { name: 'SSS 2 Science', level: 'secondary' },
       { name: 'SSS 3 Science', level: 'secondary' }
     ];
-    
+
     defaultClasses.forEach(function(cls) {
       addClassWithSubjects(cls.name, cls.level);
     });
   }
-  DB.set('scores', []);
 }
 
 // Initialize on load
@@ -661,9 +667,9 @@ function createClass() {
   }
   
   // Create class with auto-subjects
-  addClassWithSubjects(name, level);
-  
-  alert('Class created with ' + getSubjectsForClass(classes[classes.length-1].id).length + ' subjects!');
+  var newClassId = addClassWithSubjects(name, level);
+
+  alert('Class created with ' + getSubjectsForClass(newClassId).length + ' subjects!');
   document.getElementById('className').value = '';
   
   // Refresh classes display
@@ -1196,10 +1202,10 @@ function generateReportCard() {
   session = session || settings.session || '2024/2025';
   
   var classes = DB.get('classes') || [];
-  var cls = classes.find(function(c) { return c.id === classId });
-  
+  var cls = classes.find(function(c) { return c.id === classId; });
+
   var students = DB.get('students') || [];
-  var student = students.find(function(s) { return s.id === studentId });
+  var student = students.find(function(s) { return s.id === studentId; });
   
   var subjects = getSubjectsForClass(classId);
   var scores = DB.get('scores') || [];
