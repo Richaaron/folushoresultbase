@@ -190,12 +190,9 @@ sequelize.sync({ alter: true }).then(async () => {
   dbInitialized = true;
   console.log('Database initialized on startup');
   
-  // For local development
-  if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-  }
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 }).catch(err => {
   console.error('Database initialization on startup failed:', err);
   // Don't crash - Vercel will use the /api/init endpoint instead
