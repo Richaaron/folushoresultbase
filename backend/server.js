@@ -69,29 +69,35 @@ const PORT = process.env.PORT || 5000;
 let dbInitialized = false;
 
 const seedData = async () => {
-  const adminExists = await User.findOne({ where: { username: 'admin' } });
-  if (!adminExists) {
+  try {
+    // Ensure admin user exists with correct password
     const hashedAdminPassword = await bcrypt.hash('admin123', 8);
-    await User.create({
+    await User.upsert({
       username: 'admin',
       password: hashedAdminPassword,
       fullName: 'System Administrator',
-      role: 'ADMIN'
-    });
+      role: 'ADMIN',
+      isFormTeacher: false,
+      isSubjectTeacher: true
+    }, { where: { username: 'admin' } });
+    console.log('Seed: Admin user ensured.');
 
+    // Ensure teacher user exists
     const hashedTeacherPassword = await bcrypt.hash('teacher123', 8);
-    await User.create({
+    await User.upsert({
       username: 'teacher',
       password: hashedTeacherPassword,
       fullName: 'John Doe',
-      role: 'TEACHER'
-    });
-    console.log('Seed: Initial users created.');
-  }
+      role: 'TEACHER',
+      isFormTeacher: false,
+      isSubjectTeacher: true
+    }, { where: { username: 'teacher' } });
+    console.log('Seed: Teacher user ensured.');
 
-  const subjectCount = await Subject.count();
-  if (subjectCount === 0) {
-    const subjects = [
+    // Add subjects if none exist
+    const subjectCount = await Subject.count();
+    if (subjectCount === 0) {
+      const subjects = [
       // Pre-Nursery/Nursery
       { name: 'Literacy', category: 'Nursery', level: 'Beginner' },
       { name: 'Numeracy', category: 'Nursery', level: 'Beginner' },
