@@ -205,6 +205,7 @@ const AdminSettings = () => {
     primaryColor: "#fbbf24",
     secondaryColor: "#ef4444",
     principalName: "",
+    headTeacherName: "",
     schoolAddress: "",
     currentTerm: "First",
     currentAcademicYear: "",
@@ -230,6 +231,7 @@ const AdminSettings = () => {
         primaryColor: "#fbbf24",
         secondaryColor: "#ef4444",
         principalName: "",
+        headTeacherName: "",
         schoolAddress: "",
         currentTerm: "First",
         currentAcademicYear: "",
@@ -249,6 +251,7 @@ const AdminSettings = () => {
         primaryColor: settings.primaryColor,
         secondaryColor: settings.secondaryColor,
         principalName: settings.principalName,
+        headTeacherName: settings.headTeacherName,
         schoolAddress: settings.schoolAddress,
         currentTerm: settings.currentTerm,
         currentAcademicYear: settings.currentAcademicYear,
@@ -376,6 +379,21 @@ const AdminSettings = () => {
                 value={settings.principalName}
                 onChange={(e) =>
                   setSettings({ ...settings, principalName: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                Head Teacher Name
+              </label>
+              <input
+                type="text"
+                className="input-cartoon"
+                placeholder="e.g. Mrs. Jane Doe"
+                value={settings.headTeacherName}
+                onChange={(e) =>
+                  setSettings({ ...settings, headTeacherName: e.target.value })
                 }
               />
             </div>

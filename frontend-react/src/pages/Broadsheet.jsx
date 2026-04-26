@@ -495,6 +495,36 @@ const Broadsheet = () => {
                 </tbody>
               </table>
             </div>
+
+            {/* Signatures Section */}
+            <div className="mt-16 pt-12 border-t-4 border-black">
+              <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-12">
+                Authorized Signatures
+              </p>
+              <div className="grid grid-cols-2 gap-12">
+                {/* Principal Signature */}
+                <div className="text-center">
+                  <div className="h-24 border-b-2 border-black mb-2"></div>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">
+                    {settings?.principalName || "Principal"}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                    Principal's Signature
+                  </p>
+                </div>
+
+                {/* Head Teacher Signature */}
+                <div className="text-center">
+                  <div className="h-24 border-b-2 border-black mb-2"></div>
+                  <p className="text-xs font-black text-white uppercase tracking-widest">
+                    {settings?.headTeacherName || "Head Teacher"}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                    Head Teacher's Signature
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           !loading &&

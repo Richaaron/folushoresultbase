@@ -27,6 +27,10 @@ const Setting = sequelize.define("Setting", {
     type: DataTypes.STRING,
     defaultValue: "",
   },
+  headTeacherName: {
+    type: DataTypes.STRING,
+    defaultValue: "",
+  },
   schoolAddress: {
     type: DataTypes.STRING,
     defaultValue: "",
