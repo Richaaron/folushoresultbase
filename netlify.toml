@@ -1,7 +1,8 @@
 [build]
-  command = "npm install && cd frontend-react && npm run build"
+  command = "npm ci && npm run build:frontend"
   publish = "frontend-react/dist"
   functions = "netlify/functions"
+  base = "/"
 
 [dev]
   command = "npm start"
