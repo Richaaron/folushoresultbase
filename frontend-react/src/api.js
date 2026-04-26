@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Determine API URL: use env var if set, otherwise use same domain path
+const apiURL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: apiURL,
 });
 
 api.interceptors.request.use((config) => {
