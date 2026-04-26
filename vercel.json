@@ -31,18 +31,15 @@
       "dest": "frontend-react/dist/index.html"
     }
   ],
-  "env": [
-    {
-      "key": "DATABASE_URL",
+  "env": {
+    "DATABASE_URL": {
       "description": "Supabase PostgreSQL connection string"
     },
-    {
-      "key": "JWT_SECRET",
+    "JWT_SECRET": {
       "description": "Secret key for JWT token signing"
     },
-    {
-      "key": "FRONTEND_URL",
+    "FRONTEND_URL": {
       "description": "Frontend URL for CORS"
     }
-  ]
+  }
 }
