@@ -1,16 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import api from '../api';
-import { UserPlus, FileText, CheckCircle, LogOut, LayoutDashboard, Calendar, FileSpreadsheet, Lock, Unlock, Search } from 'lucide-react';
-import AcademicBackground from '../components/AcademicBackground';
+import React, { useState, useEffect, useRef } from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import api from "../api";
+import {
+  UserPlus,
+  FileText,
+  CheckCircle,
+  LogOut,
+  LayoutDashboard,
+  Calendar,
+  FileSpreadsheet,
+  Lock,
+  Unlock,
+  Search,
+  Settings,
+  Upload,
+  Save,
+  UserCircle,
+  ChevronUp,
+} from "lucide-react";
+import AcademicBackground from "../components/AcademicBackground";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      setShowScrollTop(el.scrollTop > 300);
+    };
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    // Refresh user data on mount to ensure we have latest roles/assignments
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/auth/profile"); // Assuming we have this, if not we'll use the login data
+        const updatedUser = { ...user, ...res.data };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      } catch (err) {
+        console.error("Failed to refresh profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -22,60 +69,121 @@ const TeacherDashboard = () => {
           <div className="w-12 h-12 bg-accent-gold border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm transform rotate-3">
             <LayoutDashboard size={24} className="text-black" />
           </div>
-          <h2 className="text-2xl font-black tracking-tighter uppercase italic text-white text-3d">Teacher <span className="text-accent-red">Hub</span></h2>
+          <h2 className="text-2xl font-black tracking-tighter uppercase italic text-white text-3d">
+            Teacher <span className="text-accent-red">Hub</span>
+          </h2>
         </div>
         <nav className="flex-1 space-y-4">
-          <Link to="/teacher" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white">
-            <LayoutDashboard className="mr-3" size={20} /> 
+          <Link
+            to="/teacher"
+            className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white"
+          >
+            <LayoutDashboard className="mr-3" size={20} />
             <span>Dashboard</span>
           </Link>
           {user?.isFormTeacher && (
-            <Link to="/teacher/register-student" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 transition-all group font-black uppercase tracking-tight text-white">
-              <UserPlus className="mr-3" size={20} /> 
+            <Link
+              to="/teacher/register-student"
+              className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 transition-all group font-black uppercase tracking-tight text-white"
+            >
+              <UserPlus className="mr-3" size={20} />
               <span>Register</span>
             </Link>
           )}
-          <Link to="/teacher/record-results" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white">
-            <FileText className="mr-3" size={20} /> 
+          <Link
+            to="/teacher/record-results"
+            className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white"
+          >
+            <FileText className="mr-3" size={20} />
             <span>Results</span>
           </Link>
-          <Link to="/teacher/release-results" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white">
-            <Unlock className="mr-3" size={20} /> 
+          <Link
+            to="/teacher/release-results"
+            className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white"
+          >
+            <Unlock className="mr-3" size={20} />
             <span>Release</span>
           </Link>
-          <Link to="/broadsheet" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white">
-            <FileSpreadsheet className="mr-3" size={20} /> 
+          <Link
+            to="/broadsheet"
+            className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white"
+          >
+            <FileSpreadsheet className="mr-3" size={20} />
             <span>Broadsheet</span>
           </Link>
           {user?.isFormTeacher && (
-            <Link to="/teacher/attendance" className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 transition-all group font-black uppercase tracking-tight text-white">
-              <CheckCircle className="mr-3" size={20} /> 
+            <Link
+              to="/teacher/attendance"
+              className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 transition-all group font-black uppercase tracking-tight text-white"
+            >
+              <CheckCircle className="mr-3" size={20} />
               <span>Attendance</span>
             </Link>
           )}
+          <Link
+            to="/teacher/settings"
+            className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white"
+          >
+            <Settings className="mr-3" size={20} />
+            <span>Settings</span>
+          </Link>
         </nav>
-        <button 
-          onClick={handleLogout} 
-          className="flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 text-white font-black uppercase tracking-tight transition-all mt-auto group"
+        {/* Scroll to Top Button in Sidebar */}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="flex items-center p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-4"
+          >
+            <ChevronUp
+              className="mr-3 text-black group-hover:scale-125 transition-transform"
+              size={20}
+            />
+            <span className="font-black text-black uppercase tracking-tight">
+              Scroll Top
+            </span>
+          </button>
+        )}
+        <button
+          onClick={handleLogout}
+          className={`flex items-center p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 text-white font-black uppercase tracking-tight transition-all group ${showScrollTop ? "mt-4" : "mt-auto"}`}
         >
-          <LogOut className="mr-3 transition-transform group-hover:-translate-x-1" size={20} /> 
+          <LogOut
+            className="mr-3 transition-transform group-hover:-translate-x-1"
+            size={20}
+          />
           <span>Sign Out</span>
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-10">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-10">
         <header className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic underline decoration-4 decoration-accent-gold text-3d-lg">Hello, Teacher {user?.fullName?.split(' ')[0]}! 🍎</h1>
-            <p className="text-slate-400 mt-2 font-bold text-lg">Ready to inspire some young minds today?</p>
+            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic underline decoration-4 decoration-accent-gold text-3d-lg">
+              Hello, Teacher {user?.fullName?.split(" ")[0]}! 🍎
+            </h1>
+            <p className="text-slate-400 mt-2 font-bold text-lg">
+              Ready to inspire some young minds today?
+            </p>
           </div>
           <div className="flex items-center gap-6">
             <div className="text-right">
-              <p className="text-xl font-black text-white uppercase tracking-tighter text-3d">{user?.fullName}</p>
-              <p className="text-sm font-bold text-accent-red uppercase tracking-widest italic">Master Educator</p>
+              <p className="text-xl font-black text-white uppercase tracking-tighter text-3d">
+                {user?.fullName}
+              </p>
+              <p className="text-sm font-bold text-accent-red uppercase tracking-widest italic">
+                Master Educator
+              </p>
             </div>
-            <div className="w-16 h-16 bg-slate-800 border-4 border-black rounded-3xl flex items-center justify-center font-black text-2xl shadow-cartoon transform -rotate-3 text-white">
-              {user?.fullName?.charAt(0)}
+            <div className="w-16 h-16 bg-slate-800 border-4 border-black rounded-3xl flex items-center justify-center font-black text-2xl shadow-cartoon transform -rotate-3 text-white overflow-hidden">
+              {user?.profileImage ? (
+                <img
+                  src={user.profileImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user?.fullName?.charAt(0)
+              )}
             </div>
           </div>
         </header>
@@ -86,11 +194,24 @@ const TeacherDashboard = () => {
             {user?.isFormTeacher && (
               <>
                 <Route path="/register-student" element={<RegisterStudent />} />
-                <Route path="/attendance" element={<AttendanceManager />} />
+                <Route
+                  path="/attendance"
+                  element={<AttendanceManager user={user} />}
+                />
               </>
             )}
-            <Route path="/record-results" element={<RecordResults />} />
-            <Route path="/release-results" element={<ResultReleaseManager />} />
+            <Route
+              path="/record-results"
+              element={<RecordResults user={user} />}
+            />
+            <Route
+              path="/release-results"
+              element={<ResultReleaseManager user={user} />}
+            />
+            <Route
+              path="/settings"
+              element={<TeacherSettings user={user} setUser={setUser} />}
+            />
           </Routes>
         </main>
       </div>
@@ -101,19 +222,32 @@ const TeacherDashboard = () => {
 const TeacherOverview = () => {
   return (
     <div className="cartoon-card p-10 bg-white">
-      <h2 className="text-3xl font-black text-black mb-6 uppercase italic tracking-tighter text-3d">Classroom Command Center 🚀</h2>
+      <h2 className="text-3xl font-black text-black mb-6 uppercase italic tracking-tighter text-3d">
+        Classroom Command Center 🚀
+      </h2>
       <p className="text-gray-700 font-bold text-xl leading-relaxed mb-10">
-        Welcome to your digital classroom! This is where the magic happens. 
-        Keep your students' progress sharp, their attendance perfect, and their results shining! ✨
+        Welcome to your digital classroom! This is where the magic happens. Keep
+        your students' progress sharp, their attendance perfect, and their
+        results shining! ✨
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
         <div className="p-8 bg-accent-gold/20 border-4 border-black rounded-3xl shadow-cartoon-sm hover:-translate-y-1 transition-all">
-          <h4 className="font-black text-black text-xl mb-3 uppercase tracking-tight italic">Teacher's Tip 💡</h4>
-          <p className="text-lg font-bold text-gray-800 italic">"The art of teaching is the art of assisting discovery." Keep exploring with your students!</p>
+          <h4 className="font-black text-black text-xl mb-3 uppercase tracking-tight italic">
+            Teacher's Tip 💡
+          </h4>
+          <p className="text-lg font-bold text-gray-800 italic">
+            "The art of teaching is the art of assisting discovery." Keep
+            exploring with your students!
+          </p>
         </div>
         <div className="p-8 bg-accent-red/20 border-4 border-black rounded-3xl shadow-cartoon-sm hover:-translate-y-1 transition-all">
-          <h4 className="font-black text-black text-xl mb-3 uppercase tracking-tight italic">Upcoming Goals 🎯</h4>
-          <p className="text-lg font-bold text-gray-800 italic">Term end is coming! Time to get those final grades polished and ready for the little geniuses.</p>
+          <h4 className="font-black text-black text-xl mb-3 uppercase tracking-tight italic">
+            Upcoming Goals 🎯
+          </h4>
+          <p className="text-lg font-bold text-gray-800 italic">
+            Term end is coming! Time to get those final grades polished and
+            ready for the little geniuses.
+          </p>
         </div>
       </div>
     </div>
@@ -122,52 +256,79 @@ const TeacherOverview = () => {
 
 const RegisterStudent = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    registrationNumber: '',
-    studentClass: '',
-    subjectIds: []
+    firstName: "",
+    lastName: "",
+    registrationNumber: "",
+    studentClass: "",
+    subjectIds: [],
+    profileImage: null,
   });
   const [subjects, setSubjects] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [parentCreds, setParentCreds] = useState(null);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, profileImage: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
-    api.get('/students/subjects').then(res => setSubjects(res.data));
+    api.get("/students/subjects").then((res) => setSubjects(res.data));
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post('/students', formData);
-      setMessage('Student registered successfully!');
+      const res = await api.post("/students", formData);
+      setMessage("Student registered successfully!");
       setParentCreds(res.data.parentCredentials);
-      setFormData({ firstName: '', lastName: '', registrationNumber: '', studentClass: '', subjectIds: [] });
+      setFormData({
+        firstName: "",
+        lastName: "",
+        registrationNumber: "",
+        studentClass: "",
+        subjectIds: [],
+        profileImage: null,
+      });
     } catch (err) {
-      setMessage('Error registering student');
+      setMessage("Error registering student");
     }
   };
 
   const handleSubjectToggle = (id) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      subjectIds: prev.subjectIds.includes(id) 
-        ? prev.subjectIds.filter(sid => sid !== id)
-        : [...prev.subjectIds, id]
+      subjectIds: prev.subjectIds.includes(id)
+        ? prev.subjectIds.filter((sid) => sid !== id)
+        : [...prev.subjectIds, id],
     }));
   };
 
   return (
     <div className="max-w-3xl cartoon-card p-10 bg-white">
-      <h2 className="text-3xl font-black text-black mb-8 uppercase italic tracking-tighter text-3d">Register New Superstar! ⭐</h2>
-      
+      <h2 className="text-3xl font-black text-black mb-8 uppercase italic tracking-tighter text-3d">
+        Register New Superstar! ⭐
+      </h2>
+
       {message && (
-        <div className={`p-6 mb-8 border-4 border-black rounded-2xl flex items-center gap-4 ${message.includes('Error') ? 'bg-accent-red/20' : 'bg-accent-gold/20'}`}>
-          <div className={`w-4 h-4 rounded-full border-2 border-black ${message.includes('Error') ? 'bg-accent-red' : 'bg-accent-gold'}`}></div>
-          <span className="font-black uppercase tracking-tight text-black">{message}</span>
+        <div
+          className={`p-6 mb-8 border-4 border-black rounded-2xl flex items-center gap-4 ${message.includes("Error") ? "bg-accent-red/20" : "bg-accent-gold/20"}`}
+        >
+          <div
+            className={`w-4 h-4 rounded-full border-2 border-black ${message.includes("Error") ? "bg-accent-red" : "bg-accent-gold"}`}
+          ></div>
+          <span className="font-black uppercase tracking-tight text-black">
+            {message}
+          </span>
         </div>
       )}
-      
+
       {parentCreds && (
         <div className="p-8 mb-10 bg-accent-gold border-4 border-black rounded-3xl shadow-cartoon">
           <div className="flex items-center gap-3 mb-6 text-black font-black uppercase italic tracking-tight text-xl text-3d">
@@ -176,64 +337,135 @@ const RegisterStudent = () => {
           </div>
           <div className="grid grid-cols-2 gap-6">
             <div className="bg-accent-black p-4 rounded-2xl border-4 border-black shadow-cartoon-sm">
-              <p className="text-xs text-accent-gold/60 uppercase font-black tracking-widest mb-2">Secret Username</p>
-              <p className="font-mono font-black text-xl text-accent-gold select-all">{parentCreds.username}</p>
+              <p className="text-xs text-accent-gold/60 uppercase font-black tracking-widest mb-2">
+                Secret Username
+              </p>
+              <p className="font-mono font-black text-xl text-accent-gold select-all">
+                {parentCreds.username}
+              </p>
             </div>
             <div className="bg-accent-black p-4 rounded-2xl border-4 border-black shadow-cartoon-sm">
-              <p className="text-xs text-accent-gold/60 uppercase font-black tracking-widest mb-2">Secret Password</p>
-              <p className="font-mono font-black text-xl text-accent-gold select-all">{parentCreds.password}</p>
+              <p className="text-xs text-accent-gold/60 uppercase font-black tracking-widest mb-2">
+                Secret Password
+              </p>
+              <p className="font-mono font-black text-xl text-accent-gold select-all">
+                {parentCreds.password}
+              </p>
             </div>
           </div>
           <p className="text-sm mt-6 text-black font-bold italic leading-relaxed">
-            🚀 Mission: Hand these secret keys to the parents so they can track their champion's progress!
+            🚀 Mission: Hand these secret keys to the parents so they can track
+            their champion's progress!
           </p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Profile Picture Upload */}
+        <div className="flex flex-col items-center gap-4">
+          <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+            Student Photo
+          </label>
+          <div className="relative w-36 h-36 bg-gray-100 border-4 border-black rounded-3xl overflow-hidden shadow-cartoon-sm group cursor-pointer">
+            {formData.profileImage ? (
+              <img
+                src={formData.profileImage}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                <UserPlus size={40} />
+                <span className="text-xs font-black uppercase tracking-widest">
+                  Add Photo
+                </span>
+              </div>
+            )}
+            <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer gap-2">
+              <Upload size={28} className="text-white" />
+              <span className="text-white font-black text-xs uppercase tracking-widest">
+                {formData.profileImage ? "Change" : "Upload"}
+              </span>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
+          {formData.profileImage && (
+            <button
+              type="button"
+              onClick={() =>
+                setFormData((prev) => ({ ...prev, profileImage: null }))
+              }
+              className="text-xs font-black uppercase tracking-widest text-accent-red hover:underline"
+            >
+              Remove Photo
+            </button>
+          )}
+        </div>
+
         <div className="grid grid-cols-2 gap-8">
           <div className="space-y-2">
-            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">First Name</label>
-            <input 
-              type="text" 
-              className="input-cartoon" 
+            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+              First Name
+            </label>
+            <input
+              type="text"
+              className="input-cartoon"
               placeholder="e.g. John"
               value={formData.firstName}
-              onChange={e => setFormData({...formData, firstName: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, firstName: e.target.value })
+              }
               required
             />
           </div>
           <div className="space-y-2">
-            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Last Name</label>
-            <input 
-              type="text" 
-              className="input-cartoon" 
+            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+              Last Name
+            </label>
+            <input
+              type="text"
+              className="input-cartoon"
               placeholder="e.g. Doe"
               value={formData.lastName}
-              onChange={e => setFormData({...formData, lastName: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, lastName: e.target.value })
+              }
               required
             />
           </div>
         </div>
-        
+
         <div className="space-y-2">
-          <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Registration Number</label>
-          <input 
-            type="text" 
-            className="input-cartoon" 
+          <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+            Registration Number
+          </label>
+          <input
+            type="text"
+            className="input-cartoon"
             placeholder="e.g. SCH-2024-001"
             value={formData.registrationNumber}
-            onChange={e => setFormData({...formData, registrationNumber: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, registrationNumber: e.target.value })
+            }
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Class</label>
-          <select 
+          <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+            Class
+          </label>
+          <select
             className="input-cartoon appearance-none"
             value={formData.studentClass}
-            onChange={e => setFormData({...formData, studentClass: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, studentClass: e.target.value })
+            }
             required
           >
             <option value="">Pick a Class...</option>
@@ -256,17 +488,19 @@ const RegisterStudent = () => {
         </div>
 
         <div className="space-y-4">
-          <label className="text-lg font-black text-black uppercase tracking-tight block text-3d">Assign Subjects</label>
+          <label className="text-lg font-black text-black uppercase tracking-tight block text-3d">
+            Assign Subjects
+          </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-60 overflow-y-auto p-4 border-4 border-black rounded-2xl bg-gray-50 shadow-inner">
-            {subjects.map(subject => (
+            {subjects.map((subject) => (
               <button
                 key={subject.id}
                 type="button"
                 onClick={() => handleSubjectToggle(subject.id)}
                 className={`p-3 rounded-xl border-2 font-bold text-xs transition-all ${
                   formData.subjectIds.includes(subject.id)
-                    ? 'bg-accent-gold border-black shadow-cartoon-sm -translate-y-1 text-black'
-                    : 'bg-white border-gray-200 text-gray-400 hover:border-black'
+                    ? "bg-accent-gold border-black shadow-cartoon-sm -translate-y-1 text-black"
+                    : "bg-white border-gray-200 text-gray-400 hover:border-black"
                 }`}
               >
                 {subject.name}
@@ -275,8 +509,8 @@ const RegisterStudent = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="w-full btn-cartoon-primary bg-accent-gold text-accent-black hover:bg-accent-black hover:text-accent-gold py-5 text-2xl flex items-center justify-center gap-3"
         >
           <UserPlus size={28} />
@@ -287,102 +521,307 @@ const RegisterStudent = () => {
   );
 };
 
-const RecordResults = () => {
+const RecordResults = ({ user }) => {
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [subjects, setSubjects] = useState([]);
-  const [formData, setFormData] = useState({
-    subjectId: '',
-    term: 'First',
-    academicYear: '2025/2026',
-    ca1Score: '',
-    ca2Score: '',
-    examScore: '',
-    remark: ''
-  });
-  const [message, setMessage] = useState('');
+  const [recordingMode, setRecordingMode] = useState(
+    user?.isFormTeacher ? "class" : "subject",
+  );
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("");
+
+  // Set initial mode based on user roles when user data changes
+  // But only if the user hasn't manually changed the mode yet
+  const [hasManuallyToggled, setHasManuallyToggled] = useState(false);
 
   useEffect(() => {
-    api.get('/students').then(res => setStudents(res.data));
-  }, []);
+    if (user && !hasManuallyToggled) {
+      setRecordingMode(user.isFormTeacher ? "class" : "subject");
+    }
+  }, [user?.id, user?.isFormTeacher, hasManuallyToggled]);
+
+  const [formData, setFormData] = useState({
+    subjectId: "",
+    term: "First",
+    academicYear: "2025/2026",
+    ca1Score: "",
+    ca2Score: "",
+    examScore: "",
+    remark: "",
+  });
+  const [message, setMessage] = useState("");
+
+  // Reset student selection and subjects when mode changes
+  useEffect(() => {
+    setSelectedStudent(null);
+    setSubjects([]);
+    if (recordingMode === "class") {
+      setSelectedSubjectFilter("");
+    }
+  }, [recordingMode]);
+
+  // Get subjects assigned to this teacher
+  const teacherSubjects = user?.assignedSubject
+    ? typeof user.assignedSubject === "string"
+      ? user.assignedSubject.split(", ").filter((s) => s !== "")
+      : user.assignedSubject
+    : [];
+
+  useEffect(() => {
+    fetchFilteredStudents();
+  }, [recordingMode, selectedSubjectFilter]);
+
+  const fetchFilteredStudents = async () => {
+    try {
+      let params = {};
+      if (recordingMode === "class") {
+        if (user?.assignedClass) {
+          params.studentClass = user.assignedClass;
+        } else {
+          // If in class mode but no class assigned, show nothing
+          setStudents([]);
+          return;
+        }
+      } else if (recordingMode === "subject" && selectedSubjectFilter) {
+        params.subjectName = selectedSubjectFilter;
+      } else if (recordingMode === "subject" && !selectedSubjectFilter) {
+        setStudents([]);
+        return;
+      }
+
+      const res = await api.get("/students", { params });
+      setStudents(res.data);
+    } catch (err) {
+      console.error("Failed to fetch students", err);
+    }
+  };
 
   const handleStudentSelect = (id) => {
-    const student = students.find(s => s.id === parseInt(id));
+    if (!id) {
+      setSelectedStudent(null);
+      setSubjects([]);
+      return;
+    }
+    const student = students.find((s) => s.id === parseInt(id));
     setSelectedStudent(student);
+
+    // In subject mode, we might want to automatically select the subject we're filtering by
+    if (recordingMode === "subject" && selectedSubjectFilter) {
+      const subject = student?.Subjects?.find(
+        (s) => s.name === selectedSubjectFilter,
+      );
+      if (subject) {
+        setFormData((prev) => ({ ...prev, subjectId: subject.id }));
+      }
+    }
     setSubjects(student?.Subjects || []);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/results', { ...formData, studentId: selectedStudent.id });
-      setMessage('Result recorded successfully! 🏆');
-      setFormData({ ...formData, ca1Score: '', ca2Score: '', examScore: '', remark: '' });
+      await api.post("/results", {
+        ...formData,
+        studentId: selectedStudent.id,
+      });
+      setMessage("Result recorded successfully! 🏆");
+      setFormData({
+        ...formData,
+        ca1Score: "",
+        ca2Score: "",
+        examScore: "",
+        remark: "",
+      });
     } catch (err) {
-      setMessage('Error recording result ❌');
+      setMessage("Error recording result ❌");
     }
   };
 
   return (
     <div className="cartoon-card p-10 bg-white max-w-4xl">
-      <h2 className="text-3xl font-black text-black mb-8 uppercase italic tracking-tighter text-3d">Record Achievement! 🏆</h2>
-      
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <h2 className="text-3xl font-black text-black uppercase italic tracking-tighter text-3d">
+          Record Achievement! 🏆
+        </h2>
+
+        {/* Mode Toggles */}
+        <div className="flex bg-gray-100 p-2 rounded-2xl border-4 border-black shadow-inner">
+          {user?.isFormTeacher && (
+            <button
+              onClick={() => {
+                setRecordingMode("class");
+                setSelectedStudent(null);
+                setHasManuallyToggled(true);
+              }}
+              className={`px-6 py-2 rounded-xl font-black uppercase text-xs tracking-widest transition-all ${
+                recordingMode === "class"
+                  ? "bg-accent-gold text-black border-2 border-black shadow-cartoon-xs -translate-y-1"
+                  : "text-gray-400 hover:text-black"
+              }`}
+            >
+              Class Mode
+            </button>
+          )}
+          {user?.isSubjectTeacher && (
+            <button
+              onClick={() => {
+                setRecordingMode("subject");
+                setSelectedStudent(null);
+                setHasManuallyToggled(true);
+              }}
+              className={`px-6 py-2 rounded-xl font-black uppercase text-xs tracking-widest transition-all ${
+                recordingMode === "subject"
+                  ? "bg-accent-red text-white border-2 border-black shadow-cartoon-xs -translate-y-1"
+                  : "text-gray-400 hover:text-black"
+              }`}
+            >
+              Subject Mode
+            </button>
+          )}
+        </div>
+      </div>
+
       {message && (
-        <div className={`p-6 mb-8 border-4 border-black rounded-2xl flex items-center gap-4 ${message.includes('Error') ? 'bg-accent-pink/20' : 'bg-accent-green/20'}`}>
-          <div className={`w-4 h-4 rounded-full border-2 border-black ${message.includes('Error') ? 'bg-accent-pink' : 'bg-accent-green'}`}></div>
-          <span className="font-black uppercase tracking-tight text-black">{message}</span>
+        <div
+          className={`p-6 mb-8 border-4 border-black rounded-2xl flex items-center gap-4 ${message.includes("Error") ? "bg-accent-pink/20" : "bg-accent-green/20"}`}
+        >
+          <div
+            className={`w-4 h-4 rounded-full border-2 border-black ${message.includes("Error") ? "bg-accent-pink" : "bg-accent-green"}`}
+          ></div>
+          <span className="font-black uppercase tracking-tight text-black">
+            {message}
+          </span>
         </div>
       )}
-      
-      <div className="mb-10">
-        <label className="text-lg font-black text-black uppercase tracking-tight block mb-3 text-3d">Select Champion</label>
-        <select 
-          className="input-cartoon appearance-none bg-accent-yellow/10"
-          onChange={e => handleStudentSelect(e.target.value)}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        {recordingMode === "subject" && (
+          <div className="space-y-3">
+            <label className="text-lg font-black text-black uppercase tracking-tight block text-3d">
+              Choose Subject
+            </label>
+            <select
+              className="input-cartoon appearance-none bg-accent-red/5"
+              value={selectedSubjectFilter}
+              onChange={(e) => {
+                setSelectedSubjectFilter(e.target.value);
+                setSelectedStudent(null);
+              }}
+            >
+              <option value="">-- Which subject? --</option>
+              {teacherSubjects.map((s, idx) => (
+                <option key={idx} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <div
+          className={
+            recordingMode === "subject"
+              ? "space-y-3"
+              : "md:col-span-2 space-y-3"
+          }
         >
-          <option value="">-- Who is the superstar? --</option>
-          {students.map(s => (
-            <option key={s.id} value={s.id}>{s.firstName} {s.lastName} ({s.registrationNumber})</option>
-          ))}
-        </select>
+          <label className="text-lg font-black text-black uppercase tracking-tight block text-3d">
+            Select Champion
+          </label>
+          <select
+            className="input-cartoon appearance-none bg-accent-yellow/10"
+            onChange={(e) => handleStudentSelect(e.target.value)}
+            value={selectedStudent?.id || ""}
+          >
+            <option value="">-- Who is the superstar? --</option>
+            {students.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.firstName} {s.lastName} ({s.registrationNumber})
+              </option>
+            ))}
+          </select>
+          {students.length === 0 &&
+            (recordingMode === "class" || selectedSubjectFilter) && (
+              <p className="text-xs font-black text-accent-red uppercase tracking-widest mt-2 animate-pulse">
+                {recordingMode === "class" && !user?.assignedClass
+                  ? "You haven't been assigned a class yet! 🛸"
+                  : `No superstars found in this ${recordingMode}! 🛸`}
+              </p>
+            )}
+        </div>
       </div>
 
       {selectedStudent ? (
-        <form onSubmit={handleSubmit} className="space-y-10 animate-in fade-in slide-in-from-top-4 duration-500">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-10 animate-in fade-in slide-in-from-top-4 duration-500"
+        >
           <div className="p-8 bg-accent-gold/10 border-4 border-black rounded-3xl flex items-center gap-6 shadow-cartoon-sm">
-            <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center text-black font-black text-3xl shadow-cartoon-sm rotate-3">
-              {selectedStudent.firstName.charAt(0)}
+            <div className="w-20 h-20 bg-white border-4 border-black rounded-2xl flex items-center justify-center text-black font-black text-3xl shadow-cartoon-sm rotate-3 overflow-hidden">
+              {selectedStudent.profileImage ? (
+                <img
+                  src={selectedStudent.profileImage}
+                  alt="Student"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                selectedStudent.firstName.charAt(0)
+              )}
             </div>
             <div>
-              <p className="text-3xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">{selectedStudent.firstName} {selectedStudent.lastName}</p>
+              <p className="text-3xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">
+                {selectedStudent.firstName} {selectedStudent.lastName}
+              </p>
               <div className="flex items-center gap-3">
-                <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">{selectedStudent.studentClass}</span>
-                <span className="bg-white border-2 border-black text-black px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">{selectedStudent.registrationNumber}</span>
+                <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">
+                  {selectedStudent.studentClass}
+                </span>
+                <span className="bg-white border-2 border-black text-black px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">
+                  {selectedStudent.registrationNumber}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-3">
-              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Subject</label>
-              <select 
-                className="input-cartoon appearance-none"
+              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+                Subject{" "}
+                {recordingMode === "subject" && (
+                  <span className="text-accent-red">
+                    (Locked to {selectedSubjectFilter})
+                  </span>
+                )}
+              </label>
+              <select
+                className={`input-cartoon appearance-none ${recordingMode === "subject" ? "bg-accent-red/5 border-accent-red" : ""}`}
                 value={formData.subjectId}
-                onChange={e => setFormData({...formData, subjectId: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, subjectId: e.target.value })
+                }
                 required
+                disabled={
+                  recordingMode === "subject" && !!selectedSubjectFilter
+                }
               >
                 <option value="">Pick a Subject...</option>
-                {subjects.map(sub => (
-                  <option key={sub.id} value={sub.id}>{sub.name}</option>
+                {subjects.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.name}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="space-y-3">
-              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Term</label>
-              <select 
+              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+                Term
+              </label>
+              <select
                 className="input-cartoon appearance-none"
                 value={formData.term}
-                onChange={e => setFormData({...formData, term: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, term: e.target.value })
+                }
               >
                 <option value="First">First Term</option>
                 <option value="Second">Second Term</option>
@@ -393,58 +832,92 @@ const RecordResults = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="space-y-3">
-              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">1st CA (20)</label>
+              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+                1st CA (20)
+              </label>
               <div className="relative">
-                <input 
-                  type="number" max="20"
+                <input
+                  type="number"
+                  max="20"
                   className="input-cartoon text-2xl"
                   placeholder="0"
                   value={formData.ca1Score}
-                  onChange={e => setFormData({...formData, ca1Score: parseFloat(e.target.value) || ''})}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      ca1Score: parseFloat(e.target.value) || "",
+                    })
+                  }
                 />
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">Max 20</span>
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">
+                  Max 20
+                </span>
               </div>
             </div>
             <div className="space-y-3">
-              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">2nd CA (20)</label>
+              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+                2nd CA (20)
+              </label>
               <div className="relative">
-                <input 
-                  type="number" max="20"
+                <input
+                  type="number"
+                  max="20"
                   className="input-cartoon text-2xl"
                   placeholder="0"
                   value={formData.ca2Score}
-                  onChange={e => setFormData({...formData, ca2Score: parseFloat(e.target.value) || ''})}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      ca2Score: parseFloat(e.target.value) || "",
+                    })
+                  }
                 />
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">Max 20</span>
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">
+                  Max 20
+                </span>
               </div>
             </div>
             <div className="space-y-3">
-              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Exam (60)</label>
+              <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+                Exam (60)
+              </label>
               <div className="relative">
-                <input 
-                  type="number" max="60"
+                <input
+                  type="number"
+                  max="60"
                   className="input-cartoon text-2xl"
                   placeholder="0"
                   value={formData.examScore}
-                  onChange={e => setFormData({...formData, examScore: parseFloat(e.target.value) || ''})}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      examScore: parseFloat(e.target.value) || "",
+                    })
+                  }
                 />
-                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">Max 60</span>
+                <span className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 uppercase tracking-widest">
+                  Max 60
+                </span>
               </div>
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">Teacher's Note 📝</label>
-            <textarea 
+            <label className="text-lg font-black text-black uppercase tracking-tight text-3d">
+              Teacher's Note 📝
+            </label>
+            <textarea
               className="input-cartoon h-32 resize-none py-4"
               placeholder="Write something awesome about their progress..."
               value={formData.remark}
-              onChange={e => setFormData({...formData, remark: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, remark: e.target.value })
+              }
             ></textarea>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full btn-cartoon-primary bg-accent-gold text-accent-black hover:bg-accent-black hover:text-accent-gold py-5 text-2xl flex items-center justify-center gap-3"
           >
             <CheckCircle size={28} />
@@ -453,32 +926,38 @@ const RecordResults = () => {
         </form>
       ) : (
         <div className="py-20 border-4 border-dashed border-black rounded-3xl text-center bg-gray-50/50">
-          <p className="font-black text-gray-400 uppercase tracking-widest text-xl">Select a superstar above to record their glory! ✨</p>
+          <p className="font-black text-gray-400 uppercase tracking-widest text-xl">
+            Select a superstar above to record their glory! ✨
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-const AttendanceManager = () => {
+const AttendanceManager = ({ user }) => {
   const [students, setStudents] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    api.get('/students').then(res => setStudents(res.data));
-  }, []);
+    if (user?.assignedClass) {
+      api
+        .get("/students", { params: { studentClass: user.assignedClass } })
+        .then((res) => setStudents(res.data));
+    }
+  }, [user?.assignedClass]);
 
   const handleAttendance = async (studentId, status) => {
     try {
-      await api.post('/attendance', {
+      await api.post("/attendance", {
         studentId,
-        date: new Date().toISOString().split('T')[0],
-        status
+        date: new Date().toISOString().split("T")[0],
+        status,
       });
       setMessage(`Marked ${status}! 📝`);
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      setMessage('Error! ❌');
+      setMessage("Error! ❌");
     }
   };
 
@@ -486,8 +965,16 @@ const AttendanceManager = () => {
     <div className="cartoon-card p-10 bg-white">
       <div className="flex justify-between items-end mb-10 border-b-4 border-black pb-8">
         <div>
-          <h2 className="text-4xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">Daily Roll Call 📢</h2>
-          <p className="text-xl font-black text-accent-red uppercase tracking-tight">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+          <h2 className="text-4xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">
+            Daily Roll Call 📢
+          </h2>
+          <p className="text-xl font-black text-accent-red uppercase tracking-tight">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
         </div>
         <div className="w-16 h-16 bg-accent-gold border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm -rotate-6">
           <Calendar size={32} className="text-black" />
@@ -497,7 +984,9 @@ const AttendanceManager = () => {
       {message && (
         <div className="p-6 mb-8 bg-accent-gold/20 border-4 border-black rounded-2xl flex items-center gap-4 animate-in fade-in duration-300">
           <div className="w-4 h-4 bg-accent-gold border-2 border-black rounded-full animate-pulse"></div>
-          <span className="font-black uppercase tracking-tight text-black">{message}</span>
+          <span className="font-black uppercase tracking-tight text-black">
+            {message}
+          </span>
         </div>
       )}
 
@@ -505,41 +994,62 @@ const AttendanceManager = () => {
         <table className="w-full">
           <thead>
             <tr className="text-left border-b-4 border-black">
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">Superstar</th>
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">Class</th>
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-center">Status</th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">
+                Superstar
+              </th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">
+                Class
+              </th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-center">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-black/10">
-            {students.map(s => (
-              <tr key={s.id} className="group hover:bg-accent-gold/5 transition-colors">
+            {students.map((s) => (
+              <tr
+                key={s.id}
+                className="group hover:bg-accent-gold/5 transition-colors"
+              >
                 <td className="py-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center font-black text-black shadow-cartoon-sm group-hover:rotate-3 transition-transform">
-                      {s.firstName.charAt(0)}
+                    <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center font-black text-black shadow-cartoon-sm group-hover:rotate-3 transition-transform overflow-hidden">
+                      {s.profileImage ? (
+                        <img
+                          src={s.profileImage}
+                          alt="Student"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        s.firstName.charAt(0)
+                      )}
                     </div>
-                    <span className="font-black text-xl text-black uppercase tracking-tight">{s.firstName} {s.lastName}</span>
+                    <span className="font-black text-xl text-black uppercase tracking-tight">
+                      {s.firstName} {s.lastName}
+                    </span>
                   </div>
                 </td>
                 <td className="py-6">
-                  <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest border-2 border-accent-gold">{s.studentClass}</span>
+                  <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest border-2 border-accent-gold">
+                    {s.studentClass}
+                  </span>
                 </td>
                 <td className="py-6">
                   <div className="flex items-center justify-center gap-3">
-                    <button 
-                      onClick={() => handleAttendance(s.id, 'Present')} 
+                    <button
+                      onClick={() => handleAttendance(s.id, "Present")}
                       className="px-6 py-2 bg-accent-gold border-2 border-black rounded-xl text-xs font-black uppercase tracking-widest text-black hover:shadow-cartoon-sm hover:-translate-y-1 active:translate-y-0 transition-all"
                     >
                       Here! 👋
                     </button>
-                    <button 
-                      onClick={() => handleAttendance(s.id, 'Absent')} 
+                    <button
+                      onClick={() => handleAttendance(s.id, "Absent")}
                       className="px-6 py-2 bg-accent-red border-2 border-black rounded-xl text-xs font-black uppercase tracking-widest text-white hover:shadow-cartoon-sm hover:-translate-y-1 active:translate-y-0 transition-all"
                     >
                       Away 🛸
                     </button>
-                    <button 
-                      onClick={() => handleAttendance(s.id, 'Late')} 
+                    <button
+                      onClick={() => handleAttendance(s.id, "Late")}
                       className="px-6 py-2 bg-black border-2 border-accent-gold rounded-xl text-xs font-black uppercase tracking-widest text-accent-gold hover:shadow-cartoon-sm hover:-translate-y-1 active:translate-y-0 transition-all"
                     >
                       Tardy 🐢
@@ -555,18 +1065,29 @@ const AttendanceManager = () => {
   );
 };
 
-const ResultReleaseManager = () => {
+const ResultReleaseManager = ({ user }) => {
   const [students, setStudents] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterClass, setFilterClass] = useState('');
-  const [message, setMessage] = useState('');
+  const [filterClass, setFilterClass] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [message, setMessage] = useState("");
 
   const classes = [
-    'Pre-Nursery', 'Nursery 1', 'Nursery 2',
-    'Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6',
-    'JSS 1', 'JSS 2', 'JSS 3',
-    'SSS 1', 'SSS 2', 'SSS 3'
+    "Pre-Nursery",
+    "Nursery 1",
+    "Nursery 2",
+    "Primary 1",
+    "Primary 2",
+    "Primary 3",
+    "Primary 4",
+    "Primary 5",
+    "Primary 6",
+    "JSS 1",
+    "JSS 2",
+    "JSS 3",
+    "SSS 1",
+    "SSS 2",
+    "SSS 3",
   ];
 
   useEffect(() => {
@@ -574,13 +1095,16 @@ const ResultReleaseManager = () => {
   }, []);
 
   const fetchStudents = async () => {
-    const res = await api.get('/students');
+    const params = user?.assignedClass
+      ? { studentClass: user.assignedClass }
+      : {};
+    const res = await api.get("/students", { params });
     setStudents(res.data);
   };
 
   const handleToggleSelect = (id) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -588,29 +1112,31 @@ const ResultReleaseManager = () => {
     if (selectedIds.length === filteredStudents.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(filteredStudents.map(s => s.id));
+      setSelectedIds(filteredStudents.map((s) => s.id));
     }
   };
 
   const handleBulkAction = async (released) => {
     if (selectedIds.length === 0) return;
     try {
-      await api.patch('/students/release-results', {
+      await api.patch("/students/release-results", {
         studentIds: selectedIds,
-        released
+        released,
       });
-      setMessage(`Results ${released ? 'released' : 'held'} successfully! 🚀`);
+      setMessage(`Results ${released ? "released" : "held"} successfully! 🚀`);
       fetchStudents();
       setSelectedIds([]);
-      setTimeout(() => setMessage(''), 3000);
+      setTimeout(() => setMessage(""), 3000);
     } catch (err) {
-      setMessage('Error updating status ❌');
+      setMessage("Error updating status ❌");
     }
   };
 
-  const filteredStudents = students.filter(s => {
-    const matchesSearch = `${s.firstName} ${s.lastName} ${s.registrationNumber}`.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesClass = filterClass === '' || s.studentClass === filterClass;
+  const filteredStudents = students.filter((s) => {
+    const matchesSearch = `${s.firstName} ${s.lastName} ${s.registrationNumber}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesClass = filterClass === "" || s.studentClass === filterClass;
     return matchesSearch && matchesClass;
   });
 
@@ -618,28 +1144,39 @@ const ResultReleaseManager = () => {
     <div className="cartoon-card p-10 bg-white">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b-4 border-black pb-8 gap-6">
         <div>
-          <h2 className="text-4xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">Result Release Gate 🛡️</h2>
-          <p className="text-xl font-black text-accent-red uppercase tracking-tight">Control who sees their glory!</p>
+          <h2 className="text-4xl font-black text-black uppercase italic tracking-tighter text-3d mb-2">
+            Result Release Gate 🛡️
+          </h2>
+          <p className="text-xl font-black text-accent-red uppercase tracking-tight">
+            Control who sees their glory!
+          </p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text" 
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+            <input
+              type="text"
               placeholder="Search legends..."
               className="input-cartoon pl-12 py-3 text-sm"
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <select 
+          <select
             className="input-cartoon py-3 text-sm sm:w-48 appearance-none"
             value={filterClass}
-            onChange={e => setFilterClass(e.target.value)}
+            onChange={(e) => setFilterClass(e.target.value)}
           >
             <option value="">All Classes</option>
-            {classes.map(c => <option key={c} value={c}>{c}</option>)}
+            {classes.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -647,19 +1184,21 @@ const ResultReleaseManager = () => {
       {message && (
         <div className="p-6 mb-8 bg-accent-gold/20 border-4 border-black rounded-2xl flex items-center gap-4 animate-in fade-in duration-300">
           <div className="w-4 h-4 bg-accent-gold border-2 border-black rounded-full animate-pulse"></div>
-          <span className="font-black uppercase tracking-tight text-black">{message}</span>
+          <span className="font-black uppercase tracking-tight text-black">
+            {message}
+          </span>
         </div>
       )}
 
       <div className="flex gap-4 mb-8">
-        <button 
+        <button
           onClick={() => handleBulkAction(true)}
           disabled={selectedIds.length === 0}
           className="btn-cartoon-primary bg-accent-gold px-8 py-3 text-sm flex items-center gap-2 disabled:opacity-50"
         >
           <Unlock size={18} /> Release Selected
         </button>
-        <button 
+        <button
           onClick={() => handleBulkAction(false)}
           disabled={selectedIds.length === 0}
           className="btn-cartoon-primary bg-accent-red text-white px-8 py-3 text-sm flex items-center gap-2 disabled:opacity-50"
@@ -673,24 +1212,36 @@ const ResultReleaseManager = () => {
           <thead>
             <tr className="text-left border-b-4 border-black">
               <th className="py-6 px-4">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   className="w-6 h-6 border-4 border-black rounded cursor-pointer accent-accent-gold"
-                  checked={selectedIds.length === filteredStudents.length && filteredStudents.length > 0}
+                  checked={
+                    selectedIds.length === filteredStudents.length &&
+                    filteredStudents.length > 0
+                  }
                   onChange={handleSelectAll}
                 />
               </th>
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">Superstar</th>
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-center">Status</th>
-              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-right">Class</th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm">
+                Superstar
+              </th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-center">
+                Status
+              </th>
+              <th className="py-6 font-black text-black uppercase tracking-widest text-sm text-right">
+                Class
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-black/10">
-            {filteredStudents.map(s => (
-              <tr key={s.id} className={`group transition-colors ${selectedIds.includes(s.id) ? 'bg-accent-gold/10' : 'hover:bg-gray-50'}`}>
+            {filteredStudents.map((s) => (
+              <tr
+                key={s.id}
+                className={`group transition-colors ${selectedIds.includes(s.id) ? "bg-accent-gold/10" : "hover:bg-gray-50"}`}
+              >
                 <td className="py-6 px-4">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="w-6 h-6 border-4 border-black rounded cursor-pointer accent-accent-gold"
                     checked={selectedIds.includes(s.id)}
                     onChange={() => handleToggleSelect(s.id)}
@@ -698,12 +1249,24 @@ const ResultReleaseManager = () => {
                 </td>
                 <td className="py-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center font-black text-black shadow-cartoon-xs group-hover:rotate-3 transition-transform">
-                      {s.firstName.charAt(0)}
+                    <div className="w-12 h-12 bg-white border-2 border-black rounded-xl flex items-center justify-center font-black text-black shadow-cartoon-xs group-hover:rotate-3 transition-transform overflow-hidden">
+                      {s.profileImage ? (
+                        <img
+                          src={s.profileImage}
+                          alt="Student"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        s.firstName.charAt(0)
+                      )}
                     </div>
                     <div>
-                      <span className="font-black text-lg text-black uppercase tracking-tight block">{s.firstName} {s.lastName}</span>
-                      <span className="text-xs font-bold text-gray-400">#{s.registrationNumber}</span>
+                      <span className="font-black text-lg text-black uppercase tracking-tight block">
+                        {s.firstName} {s.lastName}
+                      </span>
+                      <span className="text-xs font-bold text-gray-400">
+                        #{s.registrationNumber}
+                      </span>
                     </div>
                   </div>
                 </td>
@@ -721,12 +1284,243 @@ const ResultReleaseManager = () => {
                   </div>
                 </td>
                 <td className="py-6 text-right">
-                  <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">{s.studentClass}</span>
+                  <span className="bg-black text-white px-3 py-1 rounded-lg font-black uppercase text-xs tracking-widest">
+                    {s.studentClass}
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+};
+
+const TeacherSettings = ({ user, setUser }) => {
+  const [profileImage, setProfileImage] = useState(user?.profileImage || null);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.patch(`/teachers/profile`, { profileImage });
+      const updatedUser = { ...user, profileImage: res.data.profileImage };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setMessage("Profile image updated successfully! 📸");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setError("Failed to update profile image");
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+    try {
+      await api.put("/settings/change-password", {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+      setMessage("Password changed successfully! 🔐");
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setTimeout(() => setMessage(""), 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Error changing password");
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  return (
+    <div className="space-y-10 pb-20">
+      <div className="flex justify-between items-end mb-10 border-b-4 border-black pb-8">
+        <div>
+          <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter text-3d mb-2">
+            My Profile 👤
+          </h2>
+          <p className="text-xl font-black text-accent-gold uppercase tracking-tight">
+            Customize your educator presence!
+          </p>
+        </div>
+      </div>
+
+      {message && (
+        <div className="p-4 bg-accent-gold border-4 border-black text-black font-black rounded-2xl shadow-cartoon-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+          <CheckCircle size={24} />
+          {message}
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 bg-accent-red border-4 border-black text-white font-black rounded-2xl shadow-cartoon-sm flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+          <Unlock size={24} />
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        {/* Profile Avatar */}
+        <div className="cartoon-card p-8 bg-slate-900">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 bg-accent-gold border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm">
+              <UserCircle size={24} className="text-black" />
+            </div>
+            <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter text-3d">
+              Avatar & Identity
+            </h3>
+          </div>
+
+          <form onSubmit={handleUpdateProfile} className="space-y-8">
+            <div className="flex flex-col items-center gap-6">
+              <div className="w-48 h-48 bg-slate-800 border-4 border-black rounded-3xl overflow-hidden shadow-cartoon relative group transform -rotate-2">
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white font-black text-6xl">
+                    {user?.fullName?.charAt(0)}
+                  </div>
+                )}
+                <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer gap-2">
+                  <Upload size={32} className="text-white" />
+                  <span className="text-white font-black text-xs uppercase tracking-widest">
+                    Upload New
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+              <div className="text-center">
+                <p className="text-2xl font-black text-white uppercase tracking-tighter">
+                  {user?.fullName}
+                </p>
+                <p className="text-accent-red font-bold uppercase tracking-widest text-xs italic">
+                  Master Educator
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full btn-cartoon-primary bg-accent-gold py-4 flex items-center justify-center gap-3 text-lg"
+            >
+              <Save size={24} />
+              Save Profile Image
+            </button>
+          </form>
+        </div>
+
+        {/* Security */}
+        <div className="cartoon-card p-8 bg-slate-900">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 bg-accent-red border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm">
+              <Lock size={24} className="text-white" />
+            </div>
+            <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter text-3d">
+              Security
+            </h3>
+          </div>
+
+          <form onSubmit={handleChangePassword} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                Current Password
+              </label>
+              <input
+                type="password"
+                className="input-cartoon"
+                placeholder="••••••••"
+                value={passwordData.currentPassword}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    currentPassword: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                New Password
+              </label>
+              <input
+                type="password"
+                className="input-cartoon"
+                placeholder="••••••••"
+                value={passwordData.newPassword}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    newPassword: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                className="input-cartoon"
+                placeholder="••••••••"
+                value={passwordData.confirmPassword}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    confirmPassword: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full btn-cartoon-accent bg-accent-red text-white py-4 flex items-center justify-center gap-3 text-lg mt-4"
+            >
+              <Lock size={24} />
+              Update Password
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import api from './api';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
@@ -22,6 +23,24 @@ const PrivateRoute = ({ children, roles }) => {
 };
 
 function App() {
+  useEffect(() => {
+    const applySettings = async () => {
+      try {
+        const res = await api.get('/settings');
+        const settings = res.data;
+        if (settings) {
+          document.documentElement.style.setProperty('--color-accent-gold', settings.primaryColor);
+          document.documentElement.style.setProperty('--color-accent-red', settings.secondaryColor);
+          // Also update brand colors if they are used
+          document.documentElement.style.setProperty('--color-brand-400', settings.primaryColor);
+        }
+      } catch (error) {
+        console.error('Failed to load global settings:', error);
+      }
+    };
+    applySettings();
+  }, []);
+
   return (
     <Router>
       <div className="min-h-screen w-full">

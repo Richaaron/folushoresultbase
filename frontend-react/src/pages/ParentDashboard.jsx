@@ -12,9 +12,11 @@ const ParentDashboard = () => {
   const [selectedChild, setSelectedChild] = useState(null);
   const [results, setResults] = useState([]);
   const [attendance, setAttendance] = useState([]);
+  const [settings, setSettings] = useState(null);
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
+    api.get('/settings').then(res => setSettings(res.data));
     api.get('/students/parent').then(res => {
       setChildren(res.data);
       if (res.data.length > 0) handleChildSelect(res.data[0]);
@@ -35,22 +37,32 @@ const ParentDashboard = () => {
     const doc = new jsPDF();
     
     // Add School Header
+    if (settings?.logo) {
+      try {
+        // logo is base64
+        doc.addImage(settings.logo, 'PNG', 105 - 15, 10, 30, 30);
+      } catch (e) {
+        console.error("Could not add logo to PDF", e);
+      }
+    }
+
+    const headerY = settings?.logo ? 45 : 20;
     doc.setFontSize(22);
     doc.setTextColor(0, 0, 0);
-    doc.text("THE ACADEMY", 105, 20, { align: "center" });
+    doc.text(settings?.schoolName || "THE ACADEMY", 105, headerY, { align: "center" });
     doc.setFontSize(10);
-    doc.text("Inspiring Excellence, Discovery & Growth", 105, 28, { align: "center" });
+    doc.text("Inspiring Excellence, Discovery & Growth", 105, headerY + 8, { align: "center" });
     
     doc.setLineWidth(1);
-    doc.line(20, 35, 190, 35);
+    doc.line(20, headerY + 15, 190, headerY + 15);
 
     // Student Info
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold");
-    doc.text(`Student: ${selectedChild.lastName} ${selectedChild.firstName}`, 20, 45);
-    doc.text(`Reg No: ${selectedChild.registrationNumber}`, 20, 52);
-    doc.text(`Class: ${selectedChild.studentClass}`, 140, 45);
-    doc.text(`Academic Year: ${results[0]?.academicYear || '2025/2026'}`, 140, 52);
+    doc.text(`Student: ${selectedChild.lastName} ${selectedChild.firstName}`, 20, headerY + 25);
+    doc.text(`Reg No: ${selectedChild.registrationNumber}`, 20, headerY + 32);
+    doc.text(`Class: ${selectedChild.studentClass}`, 140, headerY + 25);
+    doc.text(`Academic Year: ${results[0]?.academicYear || '2025/2026'}`, 140, headerY + 32);
 
     // Results Table
     const tableRows = results.map(r => [
@@ -63,12 +75,16 @@ const ParentDashboard = () => {
       r.remark
     ]);
 
+    const primaryColorRGB = settings?.primaryColor 
+      ? hexToRgb(settings.primaryColor) 
+      : [0, 0, 0];
+
     doc.autoTable({
-      startY: 60,
+      startY: headerY + 40,
       head: [['Subject', 'CA 1 (20)', 'CA 2 (20)', 'Exam (60)', 'Total (100)', 'Grade', 'Remark']],
       body: tableRows,
       theme: 'grid',
-      headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontStyle: 'bold' },
+      headStyles: { fillColor: primaryColorRGB, textColor: [255, 255, 255], fontStyle: 'bold' },
       styles: { fontSize: 9 },
       columnStyles: {
         0: { cellWidth: 40 },
@@ -100,6 +116,13 @@ const ParentDashboard = () => {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/login');
+  };
+
+  const hexToRgb = (hex) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return [r, g, b];
   };
 
   return (

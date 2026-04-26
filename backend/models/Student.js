@@ -25,6 +25,10 @@ const Student = sequelize.define('Student', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  profileImage: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   resultsReleased: {
     type: DataTypes.BOOLEAN,
     defaultValue: false

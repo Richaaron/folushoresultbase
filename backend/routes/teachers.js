@@ -7,7 +7,12 @@ const User = require('../models/User');
 // Register a new teacher (Admin only)
 router.post('/register', auth, authorize(['ADMIN']), async (req, res) => {
   try {
-    const { fullName, email, isFormTeacher, isSubjectTeacher, assignedClass, assignedSubject } = req.body;
+    const { fullName, email, isFormTeacher, isSubjectTeacher, assignedClass, assignedSubject, profileImage } = req.body;
+
+    // Handle multiple subjects if provided as array
+    const formattedSubject = Array.isArray(assignedSubject) 
+      ? assignedSubject.join(', ') 
+      : assignedSubject;
 
     // Generate username from full name (lowercase, no spaces) + random suffix
     const baseUsername = fullName.toLowerCase().replace(/\s+/g, '');
@@ -27,7 +32,8 @@ router.post('/register', auth, authorize(['ADMIN']), async (req, res) => {
       isFormTeacher: !!isFormTeacher,
       isSubjectTeacher: !!isSubjectTeacher,
       assignedClass,
-      assignedSubject
+      assignedSubject: formattedSubject,
+      profileImage
     });
 
     res.status(201).send({
@@ -68,7 +74,7 @@ router.get('/', auth, authorize(['ADMIN']), async (req, res) => {
 // Update a teacher (Admin only)
 router.patch('/:id', auth, authorize(['ADMIN']), async (req, res) => {
   try {
-    const { fullName, email, isFormTeacher, isSubjectTeacher, assignedClass, assignedSubject } = req.body;
+    const { fullName, email, isFormTeacher, isSubjectTeacher, assignedClass, assignedSubject, profileImage } = req.body;
     const teacher = await User.findOne({ where: { id: req.params.id, role: 'TEACHER' } });
 
     if (!teacher) {
@@ -80,7 +86,13 @@ router.patch('/:id', auth, authorize(['ADMIN']), async (req, res) => {
     if (isFormTeacher !== undefined) teacher.isFormTeacher = isFormTeacher;
     if (isSubjectTeacher !== undefined) teacher.isSubjectTeacher = isSubjectTeacher;
     if (assignedClass !== undefined) teacher.assignedClass = assignedClass;
-    if (assignedSubject !== undefined) teacher.assignedSubject = assignedSubject;
+    if (profileImage !== undefined) teacher.profileImage = profileImage;
+    
+    if (assignedSubject !== undefined) {
+      teacher.assignedSubject = Array.isArray(assignedSubject) 
+        ? assignedSubject.join(', ') 
+        : assignedSubject;
+    }
 
     await teacher.save();
     res.send(teacher);
@@ -102,6 +114,26 @@ router.delete('/:id', auth, authorize(['ADMIN']), async (req, res) => {
     res.send({ message: 'Teacher deleted successfully' });
   } catch (error) {
     res.status(500).send({ error: 'Failed to delete teacher' });
+  }
+});
+
+// Update teacher profile image (Self)
+router.patch('/profile', auth, authorize(['TEACHER']), async (req, res) => {
+  try {
+    const { profileImage } = req.body;
+    const teacher = await User.findByPk(req.user.id);
+
+    if (!teacher) {
+      return res.status(404).send({ error: 'Teacher not found' });
+    }
+
+    teacher.profileImage = profileImage;
+    await teacher.save();
+
+    res.send({ profileImage: teacher.profileImage });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(400).send({ error: 'Failed to update profile' });
   }
 });
 

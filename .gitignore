@@ -14,3 +14,13 @@ CLAUDE.md
 .trae
 .codersinflow
 frontend-react/.vite/
+.venv
+.codex
+out
+*.vsix
+.git
+*.tmp
+__pycache__
+*.pyc
+.next
+.github

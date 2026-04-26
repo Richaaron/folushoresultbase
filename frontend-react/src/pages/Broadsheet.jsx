@@ -12,6 +12,7 @@ const Broadsheet = () => {
   const [students, setStudents] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [settings, setSettings] = useState(null);
 
   const classes = [
     'Pre-Nursery', 'Nursery 1', 'Nursery 2',
@@ -19,6 +20,10 @@ const Broadsheet = () => {
     'JSS 1', 'JSS 2', 'JSS 3',
     'SSS 1', 'SSS 2', 'SSS 3'
   ];
+
+  useEffect(() => {
+    api.get('/settings').then(res => setSettings(res.data));
+  }, []);
 
   const fetchBroadsheet = async () => {
     if (!studentClass) return;
@@ -121,10 +126,13 @@ const Broadsheet = () => {
           <div className="cartoon-card bg-slate-900 p-8 overflow-hidden">
             <div className="flex justify-between items-center mb-8 border-b-4 border-black pb-6">
               <div>
-                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter text-3d">
-                  Class Broadsheet: {studentClass}
+                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter text-3d mb-2">
+                  {settings?.schoolName || 'The Academy'}
                 </h2>
-                <p className="text-accent-red font-black uppercase tracking-tight">{term} Term | {academicYear}</p>
+                <h3 className="text-xl font-black uppercase tracking-tight italic" style={{ color: settings?.primaryColor || 'var(--color-accent-gold)' }}>
+                  Class Broadsheet: {studentClass}
+                </h3>
+                <p className="text-slate-400 font-black uppercase tracking-tight text-xs">{term} Term | {academicYear}</p>
               </div>
               <div className="flex gap-4">
                 <button className="p-4 bg-slate-800 border-4 border-black rounded-2xl shadow-cartoon-sm hover:-translate-y-1 transition-all text-white">
@@ -146,8 +154,8 @@ const Broadsheet = () => {
                         {subject.name}
                       </th>
                     ))}
-                    <th className="p-4 text-center font-black uppercase tracking-widest text-xs bg-accent-gold/10 text-accent-gold">Total</th>
-                    <th className="p-4 text-center font-black uppercase tracking-widest text-xs bg-accent-gold/10 text-accent-gold">Avg</th>
+                    <th className="p-4 text-center font-black uppercase tracking-widest text-xs" style={{ backgroundColor: `${settings?.primaryColor}20` || 'rgba(255, 215, 0, 0.1)', color: settings?.primaryColor || 'var(--color-accent-gold)' }}>Total</th>
+                    <th className="p-4 text-center font-black uppercase tracking-widest text-xs" style={{ backgroundColor: `${settings?.primaryColor}20` || 'rgba(255, 215, 0, 0.1)', color: settings?.primaryColor || 'var(--color-accent-gold)' }}>Avg</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -156,7 +164,7 @@ const Broadsheet = () => {
                     const avgScore = student.Results.length > 0 ? totalScore / student.Results.length : 0;
                     
                     return (
-                      <tr key={student.id} className="border-b-2 border-black/5 hover:bg-accent-gold/5 transition-colors group">
+                      <tr key={student.id} className="border-b-2 border-black/5 transition-colors group" style={{ hover: { backgroundColor: `${settings?.primaryColor}10` } }}>
                         <td className="p-4 font-bold text-white uppercase tracking-tight sticky left-0 bg-slate-900 group-hover:bg-slate-800 border-r-2 border-black z-10">
                           {student.lastName} {student.firstName}
                         </td>
@@ -172,10 +180,10 @@ const Broadsheet = () => {
                             </td>
                           );
                         })}
-                        <td className="p-4 text-center font-black text-lg bg-accent-gold/5 border-r-2 border-black/5 text-white">
+                        <td className="p-4 text-center font-black text-lg border-r-2 border-black/5 text-white" style={{ backgroundColor: `${settings?.primaryColor}10` }}>
                           {totalScore.toFixed(0)}
                         </td>
-                        <td className="p-4 text-center font-black text-lg bg-accent-gold/5 text-white">
+                        <td className="p-4 text-center font-black text-lg text-white" style={{ backgroundColor: `${settings?.primaryColor}10` }}>
                           {avgScore.toFixed(1)}%
                         </td>
                       </tr>

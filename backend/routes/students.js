@@ -8,7 +8,7 @@ const Subject = require('../models/Subject');
 
 router.post('/', auth, authorize(['ADMIN', 'TEACHER']), async (req, res) => {
   try {
-    const { firstName, lastName, registrationNumber, studentClass, subjectIds } = req.body;
+    const { firstName, lastName, registrationNumber, studentClass, subjectIds, profileImage } = req.body;
 
     // Create automated parent account
     const parentUsername = `parent_${registrationNumber}`;
@@ -27,6 +27,7 @@ router.post('/', auth, authorize(['ADMIN', 'TEACHER']), async (req, res) => {
       lastName,
       registrationNumber,
       studentClass,
+      profileImage,
       parentId: parent.id
     });
 
@@ -45,7 +46,26 @@ router.post('/', auth, authorize(['ADMIN', 'TEACHER']), async (req, res) => {
 
 router.get('/', auth, authorize(['ADMIN', 'TEACHER']), async (req, res) => {
   try {
-    const students = await Student.findAll({ include: [{ model: Subject }] });
+    const { studentClass, subjectName } = req.query;
+    let where = {};
+    let include = [{ model: Subject }];
+
+    if (studentClass) {
+      where.studentClass = studentClass;
+    }
+
+    if (subjectName) {
+      include = [{
+        model: Subject,
+        where: { name: subjectName },
+        required: true // Only return students who have this subject
+      }];
+    }
+
+    const students = await Student.findAll({ 
+      where,
+      include 
+    });
     res.send(students);
   } catch (error) {
     res.status(500).send(error);
@@ -103,11 +123,11 @@ router.patch('/release-results', auth, authorize(['ADMIN', 'TEACHER']), async (r
 
 router.patch('/:id', auth, authorize(['ADMIN', 'TEACHER']), async (req, res) => {
   try {
-    const { firstName, lastName, studentClass, subjectIds } = req.body;
+    const { firstName, lastName, studentClass, subjectIds, profileImage } = req.body;
     const student = await Student.findByPk(req.params.id);
     if (!student) return res.status(404).send({ error: 'Student not found' });
 
-    await student.update({ firstName, lastName, studentClass });
+    await student.update({ firstName, lastName, studentClass, profileImage });
     
     if (subjectIds) {
       await student.setSubjects(subjectIds);

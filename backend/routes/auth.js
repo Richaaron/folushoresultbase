@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { auth } = require('../middleware/auth');
 
 router.post('/login', async (req, res) => {
   try {
@@ -21,12 +22,36 @@ router.post('/login', async (req, res) => {
         fullName: user.fullName, 
         role: user.role,
         isFormTeacher: user.isFormTeacher,
-        isSubjectTeacher: user.isSubjectTeacher
+        isSubjectTeacher: user.isSubjectTeacher,
+        assignedClass: user.assignedClass,
+        assignedSubject: user.assignedSubject,
+        profileImage: user.profileImage
       }, 
       token 
     });
   } catch (error) {
     res.status(400).send(error);
+  }
+});
+
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) return res.status(404).send({ error: 'User not found' });
+    
+    res.send({ 
+      id: user.id, 
+      username: user.username, 
+      fullName: user.fullName, 
+      role: user.role,
+      isFormTeacher: user.isFormTeacher,
+      isSubjectTeacher: user.isSubjectTeacher,
+      assignedClass: user.assignedClass,
+      assignedSubject: user.assignedSubject,
+      profileImage: user.profileImage
+    });
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 

@@ -22,7 +22,7 @@ const User = sequelize.define('User', {
   },
   role: {
     type: DataTypes.ENUM('ADMIN', 'TEACHER', 'PARENT'),
-    allowNull: false
+    defaultValue: 'TEACHER'
   },
   isFormTeacher: {
     type: DataTypes.BOOLEAN,
@@ -32,12 +32,16 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  profileImage: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   assignedClass: {
     type: DataTypes.STRING,
     allowNull: true
   },
   assignedSubject: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     allowNull: true
   }
 });
