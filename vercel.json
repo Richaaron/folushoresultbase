@@ -32,14 +32,8 @@
     }
   ],
   "env": {
-    "DATABASE_URL": {
-      "description": "Supabase PostgreSQL connection string"
-    },
-    "JWT_SECRET": {
-      "description": "Secret key for JWT token signing"
-    },
-    "FRONTEND_URL": {
-      "description": "Frontend URL for CORS"
-    }
+    "DATABASE_URL": "Supabase PostgreSQL connection string",
+    "JWT_SECRET": "Secret key for JWT token signing",
+    "FRONTEND_URL": "Frontend URL for CORS"
   }
 }
