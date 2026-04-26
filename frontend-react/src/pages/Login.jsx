@@ -35,38 +35,44 @@ const Login = () => {
   };
 
   const renderLoginButtons = () => (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <button 
         onClick={() => setLoginType('ADMIN')}
-        className="w-full btn-cartoon-primary bg-accent-black text-accent-gold flex items-center justify-between group"
+        className="w-full btn-cartoon-primary bg-accent-black text-accent-gold flex flex-col items-center justify-center gap-4 p-8 group h-full"
       >
-        <div className="flex items-center gap-4">
-          <ShieldCheck size={32} />
-          <span className="text-2xl text-3d">Admin Hub</span>
+        <div className="w-16 h-16 bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
+          <ShieldCheck size={40} />
         </div>
-        <span className="text-xs font-black opacity-50 group-hover:opacity-100 transition-opacity uppercase tracking-widest text-accent-gold">Full Access</span>
+        <div className="text-center">
+          <span className="text-2xl text-3d block">Admin</span>
+          <span className="text-[10px] font-black opacity-50 uppercase tracking-widest text-accent-gold">Full Access</span>
+        </div>
       </button>
 
       <button 
         onClick={() => setLoginType('TEACHER')}
-        className="w-full btn-cartoon-primary bg-accent-gold text-accent-black flex items-center justify-between group"
+        className="w-full btn-cartoon-primary bg-accent-gold text-accent-black flex flex-col items-center justify-center gap-4 p-8 group h-full"
       >
-        <div className="flex items-center gap-4">
-          <UserCircle size={32} />
-          <span className="text-2xl text-3d">Teacher Portal</span>
+        <div className="w-16 h-16 bg-white/20 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
+          <UserCircle size={40} />
         </div>
-        <span className="text-xs font-black opacity-50 group-hover:opacity-100 transition-opacity uppercase tracking-widest text-accent-black">Records & Students</span>
+        <div className="text-center">
+          <span className="text-2xl text-3d block">Teacher</span>
+          <span className="text-[10px] font-black opacity-50 uppercase tracking-widest text-accent-black">Records</span>
+        </div>
       </button>
 
       <button 
         onClick={() => setLoginType('PARENT')}
-        className="w-full btn-cartoon-primary bg-accent-red text-white flex items-center justify-between group"
+        className="w-full btn-cartoon-primary bg-accent-red text-white flex flex-col items-center justify-center gap-4 p-8 group h-full"
       >
-        <div className="flex items-center gap-4">
-          <Users size={32} />
-          <span className="text-2xl text-3d">Parent Zone</span>
+        <div className="w-16 h-16 bg-white/20 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
+          <Users size={40} />
         </div>
-        <span className="text-xs font-black opacity-50 group-hover:opacity-100 transition-opacity uppercase tracking-widest text-white">View Results</span>
+        <div className="text-center">
+          <span className="text-2xl text-3d block">Parent</span>
+          <span className="text-[10px] font-black opacity-50 uppercase tracking-widest text-white">Results</span>
+        </div>
       </button>
     </div>
   );
@@ -140,7 +146,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-slate-950 relative overflow-hidden">
       <AcademicBackground />
 
-      <div className="p-10 cartoon-card w-full max-w-md relative z-10 bg-slate-900 border-4 border-black">
+      <div className="p-10 cartoon-card w-full max-w-2xl relative z-10 bg-slate-900 border-4 border-black">
         <div className="mb-10 text-center relative">
           <div className="w-20 h-20 bg-accent-gold border-4 border-black rounded-3xl flex items-center justify-center text-black mx-auto mb-6 shadow-cartoon transform -rotate-6 hover:rotate-0 transition-all duration-300">
             <GraduationCap size={40} strokeWidth={2.5} />
