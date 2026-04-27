@@ -249,7 +249,7 @@ const TeacherDashboard = () => {
         </main>
 
         {/* Floating Scroll Button */}
-        {showScroll && (
+        {showScrollTop && (
           <button
             onClick={scrollToTop}
             className="fixed bottom-8 right-8 flex items-center p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group"
