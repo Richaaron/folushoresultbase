@@ -7,6 +7,8 @@ const { auth } = require("../middleware/auth");
 
 router.post("/login", async (req, res) => {
   try {
+    console.log(`[Login] Full req.body:`, JSON.stringify(req.body));
+    console.log(`[Login] Content-Type:`, req.headers['content-type']);
     const { username, password } = req.body;
     console.log(`[Login] Attempting login for username: ${username}`);
     

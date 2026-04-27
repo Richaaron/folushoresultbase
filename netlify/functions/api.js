@@ -39,8 +39,12 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 console.log('Node paths:', process.env.NODE_PATH);
 console.log('Environment DATABASE_URL set:', !!process.env.DATABASE_URL);
+console.log('Environment JWT_SECRET set:', !!process.env.JWT_SECRET);
 
 const serverless = require('serverless-http');
 const app = require('../../backend/server');
 
-exports.handler = serverless(app);
+exports.handler = serverless(app, {
+  binary: ['application/octet-stream', 'image/*'],
+  basePath: '/.netlify/functions/api'
+});
