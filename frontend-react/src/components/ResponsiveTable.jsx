@@ -10,7 +10,7 @@ const ResponsiveTable = ({ headers, rows, className = "" }) => {
               {headers.map((header, idx) => (
                 <th
                   key={idx}
-                  className="bg-accent-gold text-black border-2 border-black px-2 md:px-4 py-2 text-xs md:text-sm font-black text-left"
+                  className="bg-slate-800/60 text-accent-gold border-b border-slate-700/50 px-2 md:px-4 py-3 text-xs md:text-sm font-semibold text-left"
                 >
                   {header}
                 </th>
@@ -19,11 +19,11 @@ const ResponsiveTable = ({ headers, rows, className = "" }) => {
           </thead>
           <tbody>
             {rows.map((row, rowIdx) => (
-              <tr key={rowIdx} className="border-b-2 border-black hover:bg-slate-800/20">
+              <tr key={rowIdx} className="border-b border-slate-700/30 hover:bg-slate-800/30 transition-colors">
                 {row.map((cell, cellIdx) => (
                   <td
                     key={cellIdx}
-                    className="border-r border-black/30 px-2 md:px-4 py-2 text-xs md:text-sm font-medium text-white"
+                    className="px-2 md:px-4 py-2.5 text-xs md:text-sm font-medium text-slate-200"
                   >
                     {cell}
                   </td>

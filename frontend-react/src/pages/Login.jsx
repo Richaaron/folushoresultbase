@@ -51,17 +51,17 @@ const Login = () => {
   };
 
   const renderLoginButtons = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
       <button
         onClick={() => setLoginType("ADMIN")}
-        className="w-full btn-cartoon-primary bg-accent-black text-accent-gold flex flex-col items-center justify-center gap-3 md:gap-4 p-4 md:p-8 group h-full"
+        className="professional-card flex flex-col items-center justify-center gap-4 p-6 md:p-8 group h-full hover:shadow-lg"
       >
-        <div className="w-12 md:w-16 h-12 md:h-16 bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
-          <ShieldCheck size={28} md:size={40} />
+        <div className="w-14 md:w-16 h-14 md:h-16 bg-slate-800 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+          <ShieldCheck size={32} className="text-accent-gold" />
         </div>
         <div className="text-center">
-          <span className="text-lg md:text-2xl text-3d block">Admin</span>
-          <span className="text-[8px] md:text-[10px] font-black opacity-50 uppercase tracking-widest text-accent-gold">
+          <span className="text-lg md:text-xl font-bold block text-white">Admin</span>
+          <span className="text-xs md:text-sm font-medium text-slate-400">
             Full Access
           </span>
         </div>
@@ -69,14 +69,14 @@ const Login = () => {
 
       <button
         onClick={() => setLoginType("TEACHER")}
-        className="w-full btn-cartoon-primary bg-accent-gold text-accent-black flex flex-col items-center justify-center gap-3 md:gap-4 p-4 md:p-8 group h-full"
+        className="professional-card flex flex-col items-center justify-center gap-4 p-6 md:p-8 group h-full hover:shadow-lg"
       >
-        <div className="w-12 md:w-16 h-12 md:h-16 bg-white/20 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
-          <UserCircle size={28} md:size={40} />
+        <div className="w-14 md:w-16 h-14 md:h-16 bg-slate-800 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+          <UserCircle size={32} className="text-accent-gold" />
         </div>
         <div className="text-center">
-          <span className="text-lg md:text-2xl text-3d block">Teacher</span>
-          <span className="text-[8px] md:text-[10px] font-black opacity-50 uppercase tracking-widest text-accent-black">
+          <span className="text-lg md:text-xl font-bold block text-white">Teacher</span>
+          <span className="text-xs md:text-sm font-medium text-slate-400">
             Records
           </span>
         </div>
@@ -84,14 +84,14 @@ const Login = () => {
 
       <button
         onClick={() => setLoginType("PARENT")}
-        className="w-full btn-cartoon-primary bg-accent-red text-white flex flex-col items-center justify-center gap-3 md:gap-4 p-4 md:p-8 group h-full"
+        className="professional-card flex flex-col items-center justify-center gap-4 p-6 md:p-8 group h-full hover:shadow-lg"
       >
-        <div className="w-12 md:w-16 h-12 md:h-16 bg-white/20 border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm group-hover:scale-110 transition-transform">
-          <Users size={28} md:size={40} />
+        <div className="w-14 md:w-16 h-14 md:h-16 bg-slate-800 rounded-lg flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+          <Users size={32} className="text-accent-gold" />
         </div>
         <div className="text-center">
-          <span className="text-lg md:text-2xl text-3d block">Parent</span>
-          <span className="text-[8px] md:text-[10px] font-black opacity-50 uppercase tracking-widest text-white">
+          <span className="text-lg md:text-xl font-bold block text-white">Parent</span>
+          <span className="text-xs md:text-sm font-medium text-slate-400">
             Results
           </span>
         </div>
@@ -109,53 +109,43 @@ const Login = () => {
           setPassword("");
           setShowPassword(false);
         }}
-        className="mb-6 text-white font-black uppercase tracking-widest text-xs flex items-center gap-2 hover:translate-x-[-4px] transition-transform"
+        className="mb-6 text-slate-300 font-medium text-sm flex items-center gap-2 hover:text-white transition-colors"
       >
         ← Go Back
       </button>
 
-      <div
-        className={`p-4 mb-6 md:mb-8 border-4 border-black rounded-2xl shadow-cartoon-sm flex items-center gap-4 ${
-          loginType === "ADMIN"
-            ? "bg-accent-black text-accent-gold"
-            : loginType === "TEACHER"
-              ? "bg-accent-gold text-accent-black"
-              : "bg-accent-red text-white"
-        }`}
-      >
+      <div className="professional-card p-4 mb-6 md:mb-8 flex items-center gap-4 bg-slate-800/40 border-slate-700/60">
         {loginType === "ADMIN" ? (
-          <ShieldCheck size={24} md:size={32} />
+          <ShieldCheck size={24} className="text-accent-gold flex-shrink-0" />
         ) : loginType === "TEACHER" ? (
-          <UserCircle size={24} md:size={32} />
+          <UserCircle size={24} className="text-accent-gold flex-shrink-0" />
         ) : (
-          <Users size={24} md:size={32} />
+          <Users size={24} className="text-accent-gold flex-shrink-0" />
         )}
         <div>
-          <h3 className="text-lg md:text-2xl font-black uppercase italic text-3d">
-            {loginType} LOGIN
+          <h3 className="text-lg md:text-xl font-bold text-white">
+            {loginType} Login
           </h3>
-          <p
-            className={`text-xs font-bold uppercase tracking-widest ${loginType === "PARENT" ? "text-white/60" : "text-black/60"}`}
-          >
-            Please enter your credentials
+          <p className="text-xs md:text-sm font-medium text-slate-400">
+            Enter your credentials
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 md:mb-6 p-4 bg-accent-red border-4 border-black text-white font-black rounded-2xl shadow-cartoon-sm text-sm md:text-base">
-          Oops! {error}
+        <div className="mb-4 md:mb-6 p-4 bg-red-500/20 border border-red-500/30 text-red-200 font-medium rounded-lg text-sm md:text-base">
+          ⚠ {error}
         </div>
       )}
 
       <form onSubmit={handleLogin} className="space-y-4 md:space-y-6">
         <div className="relative group">
-          <label className="block text-sm md:text-lg font-black text-white mb-2 uppercase tracking-tight text-3d">
+          <label className="block text-sm md:text-base font-semibold text-slate-200 mb-2">
             Username
           </label>
           <input
             type="text"
-            className="input-cartoon focus:border-accent-gold w-full bg-slate-800 text-white placeholder-white/30"
+            className="input-field"
             placeholder={
               loginType === "PARENT" ? "e.g. parent_12345" : "Your username..."
             }
@@ -165,14 +155,14 @@ const Login = () => {
           />
         </div>
         <div className="relative group">
-          <label className="block text-sm md:text-lg font-black text-white mb-2 uppercase tracking-tight text-3d">
+          <label className="block text-sm md:text-base font-semibold text-slate-200 mb-2">
             Password
           </label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              className="input-cartoon focus:border-accent-gold w-full bg-slate-800 text-white placeholder-white/30 pr-14"
-              placeholder="Secret code..."
+              className="input-field pr-14"
+              placeholder="Enter your password..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -180,7 +170,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-accent-gold transition-colors focus:outline-none"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-accent-gold transition-colors focus:outline-none"
               tabIndex={-1}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
@@ -191,9 +181,9 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn-cartoon-primary text-lg md:text-xl mt-4 bg-accent-gold text-accent-black hover:bg-white hover:text-accent-black disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-accent-gold disabled:hover:text-accent-black"
+          className="w-full btn-primary text-base md:text-lg mt-6 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? "Unlocking... 🔓" : "Unlock Portal! 🔑"}
+          {loading ? "Logging in..." : "Sign In"}
         </button>
       </form>
     </div>
@@ -203,26 +193,26 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-slate-950 relative overflow-hidden p-4">
       <AcademicBackground />
 
-      <div className="p-6 md:p-10 cartoon-card w-full max-w-2xl relative z-10 bg-slate-900 border-4 border-black">
+      <div className="professional-card p-6 md:p-10 w-full max-w-2xl relative z-10 bg-slate-900/70 border-slate-700/60">
         <div className="mb-8 md:mb-10 text-center relative">
-          <div className="w-16 md:w-20 h-16 md:h-20 bg-accent-gold border-4 border-black rounded-3xl flex items-center justify-center text-black mx-auto mb-4 md:mb-6 shadow-cartoon transform -rotate-6 hover:rotate-0 transition-all duration-300">
+          <div className="w-16 md:w-20 h-16 md:h-20 bg-accent-gold rounded-lg flex items-center justify-center text-slate-900 mx-auto mb-4 md:mb-6 shadow-md">
             <GraduationCap size={32} md:size={40} strokeWidth={2.5} />
           </div>
-          <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase italic text-3d-lg">
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
             School{" "}
-            <span className="text-accent-red underline decoration-4 decoration-accent-gold underline-offset-4">
+            <span className="text-accent-gold">
               Portal
             </span>
           </h2>
-          <p className="text-slate-400 mt-3 md:mt-4 font-black text-sm md:text-lg italic uppercase">
-            Select your role to start! 🎒
+          <p className="text-slate-400 mt-3 md:mt-4 font-medium text-sm md:text-base">
+            Select your role to continue
           </p>
         </div>
 
         {!loginType ? renderLoginButtons() : renderLoginForm()}
 
         <div className="mt-8 md:mt-12 text-center">
-          <p className="text-white font-black text-xs uppercase tracking-widest opacity-30">
+          <p className="text-slate-500 text-xs font-medium">
             School Result System v2.0
           </p>
         </div>

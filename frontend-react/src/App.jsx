@@ -16,18 +16,16 @@ import Broadsheet from "./pages/Broadsheet";
 const NotFound = () => (
   <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white gap-6">
     <div className="text-center">
-      <h1 className="text-8xl font-black text-accent-gold tracking-tighter text-3d-lg mb-4">
-        404
-      </h1>
-      <p className="text-2xl font-black uppercase italic tracking-tight text-white mb-2">
+      <h1 className="text-7xl font-bold text-accent-gold mb-2">404</h1>
+      <p className="text-2xl font-semibold text-slate-200 mb-2">
         Page Not Found
       </p>
-      <p className="text-slate-400 font-bold mb-8">
+      <p className="text-slate-400 font-medium mb-8">
         Oops! This page doesn't exist or was moved.
       </p>
       <Link
         to="/"
-        className="inline-block bg-accent-gold text-black border-4 border-black px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-sm shadow-cartoon hover:-translate-y-1 transition-transform"
+        className="inline-block btn-primary"
       >
         ← Back to Home
       </Link>
@@ -97,8 +95,8 @@ function App() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-accent-gold border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white font-black uppercase tracking-widest text-sm opacity-60">
+          <div className="w-12 h-12 border-3 border-slate-600 border-t-accent-gold rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-300 font-semibold text-sm">
             Loading...
           </p>
         </div>

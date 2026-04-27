@@ -12,62 +12,32 @@
   --color-brand-800: #92400e;
   --color-brand-900: #78350f;
 
-  --color-accent-gold: #FFD700;
+  --color-accent-gold: #F59E0B;
   --color-accent-red: #EF4444;
   --color-accent-black: #000000;
   
   /* Backward compatibility for generic names if needed, but updated to theme */
-  --color-accent-yellow: #FFD700;
-  --color-accent-pink: #EF4444;
+  --color-accent-yellow: #F59E0B;
+  --color-accent-pink: #EC4899;
   --color-accent-green: #10B981;
-  --color-accent-orange: #F59E0B;
+  --color-accent-orange: #F97316;
 
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
   --radius-xl: 1.25rem;
-  --radius-2xl: 2rem;
-  --radius-3xl: 3rem;
 
-  --shadow-cartoon: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-cartoon-hover: 8px 8px 0px 0px rgba(0, 0, 0, 1);
-  --shadow-cartoon-sm: 2px 2px 0px 0px rgba(0, 0, 0, 1);
-}
-
-@keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(5deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
-}
-
-@keyframes scribble {
-  0% { stroke-dashoffset: 1000; }
-  100% { stroke-dashoffset: 0; }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 :root {
-  font-family: 'Comic Neue', cursive;
-  background-color: #0f172a; /* Dark slate background */
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #0f172a;
   color: #f8fafc;
-}
-
-@layer utilities {
-  .text-3d {
-    text-shadow: 
-      1px 1px 0px #000,
-      2px 2px 0px #000,
-      3px 3px 0px #000;
-  }
-  
-  .text-3d-lg {
-    text-shadow: 
-      1px 1px 0px #000,
-      2px 2px 0px #000,
-      3px 3px 0px #000,
-      4px 4px 0px #000,
-      5px 5px 0px #000;
-  }
 }
 
 @layer base {
@@ -76,27 +46,83 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  button {
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  input, textarea, select {
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 }
 
 @layer components {
-  .cartoon-card {
-    @apply bg-slate-900 border-4 border-black rounded-3xl shadow-cartoon transition-all duration-200;
-  }
-  
-  .cartoon-card-hover {
-    @apply hover:-translate-x-1 hover:-translate-y-1 hover:shadow-cartoon-hover;
+  .professional-card {
+    @apply bg-slate-900/60 border border-slate-700/50 rounded-lg shadow-md backdrop-blur-sm transition-all duration-300 hover:bg-slate-900/80 hover:border-slate-600/50 hover:shadow-lg;
   }
 
-  .btn-cartoon-primary {
-    @apply bg-accent-gold text-black border-4 border-black px-6 py-3 rounded-2xl font-black uppercase tracking-tighter shadow-cartoon transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-cartoon-hover active:translate-x-0 active:translate-y-0 active:shadow-none;
+  .btn-primary {
+    @apply bg-accent-gold text-slate-900 px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 hover:bg-amber-400 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg;
   }
 
-  .btn-cartoon-accent {
-    @apply bg-accent-red text-white border-4 border-black px-6 py-3 rounded-2xl font-black uppercase tracking-tighter shadow-cartoon transition-all duration-200 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-cartoon-hover active:translate-x-0 active:translate-y-0 active:shadow-none;
+  .btn-secondary {
+    @apply bg-slate-800 text-white px-6 py-2.5 rounded-lg font-semibold border border-slate-700 transition-all duration-200 hover:bg-slate-700 hover:border-slate-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg;
   }
 
-  .input-cartoon {
-    @apply w-full px-4 py-3 bg-slate-800 text-white border-4 border-black rounded-2xl font-bold focus:ring-0 outline-none transition-all placeholder:text-slate-500;
+  .btn-accent {
+    @apply bg-accent-red text-white px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 hover:bg-red-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg;
+  }
+
+  .btn-ghost {
+    @apply text-slate-300 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 hover:bg-slate-800 hover:text-white active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 bg-slate-800/50 text-white border border-slate-700/50 rounded-lg font-medium focus:ring-2 focus:ring-accent-gold focus:border-transparent outline-none transition-all placeholder:text-slate-500 backdrop-blur-sm;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+  }
+
+  .badge-primary {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-accent-gold/20 text-accent-gold;
+  }
+
+  .badge-success {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-emerald-500/20 text-emerald-400;
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-amber-500/20 text-amber-400;
+  }
+
+  .badge-error {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-500/20 text-red-400;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-accent-gold to-accent-red bg-clip-text text-transparent;
+  }
+
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-lg;
+  }
+
+  .glass-dark {
+    @apply bg-slate-950/40 backdrop-blur-md border border-slate-700/30 rounded-lg;
+  }
+
+  .smooth-transition {
+    @apply transition-all duration-300 ease-out;
   }
 }

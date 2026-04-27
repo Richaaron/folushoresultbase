@@ -47,6 +47,10 @@ export default {
           950: '#020617',
         }
       },
+      fontFamily: {
+        sans: ['Poppins', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        display: ['Poppins', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
       borderRadius: {
         'xl': '1rem',
         '2xl': '1.5rem',
