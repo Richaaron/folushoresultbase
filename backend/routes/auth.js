@@ -101,8 +101,8 @@ router.post("/login", async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error('[Login] Error during login:', error.message);
-    res.status(400).send({ error: error.message || "Login failed" });
+    console.error('[Login] Error during login:', error.message, error.stack);
+    res.status(400).send({ error: error.message || "Login failed", details: error.toString() });
   }
 });
 
