@@ -27,6 +27,7 @@ import {
   Upload,
   Save,
   Lock,
+  Menu,
 } from "lucide-react";
 import AcademicBackground from "../components/AcademicBackground";
 
@@ -35,6 +36,7 @@ const AdminDashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [activeTab, setActiveTab] = useState("overview");
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -57,72 +59,104 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#0f172a] relative overflow-hidden transition-colors duration-300">
+    <div className="flex flex-col md:flex-row h-screen bg-[#0f172a] relative overflow-hidden transition-colors duration-300">
       <AcademicBackground />
+
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center justify-between bg-slate-900 border-b-4 border-black p-4 sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <LayoutDashboard size={24} className="text-accent-gold" />
+          <h1 className="text-lg font-black text-white uppercase">Admin Hub</h1>
+        </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 hover:bg-slate-800 rounded-lg"
+        >
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 md:hidden z-30"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className="w-72 bg-slate-900 border-r-4 border-black p-8 flex flex-col shadow-cartoon relative z-10 transition-colors overflow-y-auto">
-        <div className="flex items-center gap-3 mb-12">
+      <div
+        className={`fixed md:relative md:flex w-64 md:w-72 h-[calc(100vh-64px)] md:h-screen bg-slate-900 border-r-4 border-black p-4 md:p-8 flex flex-col shadow-cartoon z-40 overflow-y-auto transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+      >
+        <div className="hidden md:flex items-center gap-3 mb-8 md:mb-12">
           <div className="w-12 h-12 bg-accent-gold border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm transform -rotate-3">
             <LayoutDashboard size={24} className="text-black" />
           </div>
-          <h2 className="text-2xl font-black tracking-tighter uppercase italic text-white text-3d">
+          <h2 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-white text-3d">
             Admin <span className="text-accent-red">Hub</span>
           </h2>
         </div>
-        <nav className="space-y-4">
+
+        <nav className="space-y-3 md:space-y-4">
           <NavLink
             to="/admin"
             end
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <LayoutDashboard className="mr-3" size={20} />
+            <LayoutDashboard className="mr-2 md:mr-3" size={18} />
             <span>Control Room</span>
           </NavLink>
           <NavLink
             to="/admin/students"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
             }
           >
-            <Users className="mr-3" size={20} />
+            <Users className="mr-2 md:mr-3" size={18} />
             <span>The Squad</span>
           </NavLink>
           <NavLink
             to="/admin/subjects"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <BookOpen className="mr-3" size={20} />
+            <BookOpen className="mr-2 md:mr-3" size={18} />
             <span>Knowledge</span>
           </NavLink>
           <NavLink
             to="/admin/teachers"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
             }
           >
-            <UserCircle className="mr-3" size={20} />
+            <UserCircle className="mr-2 md:mr-3" size={18} />
             <span>Educators</span>
           </NavLink>
           <NavLink
             to="/broadsheet"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <FileSpreadsheet className="mr-3" size={20} />
+            <FileSpreadsheet className="mr-2 md:mr-3" size={18} />
             <span>Broadsheet</span>
           </NavLink>
           <NavLink
             to="/admin/settings"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-red/30" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
             }
           >
-            <Settings className="mr-3" size={20} />
+            <Settings className="mr-2 md:mr-3" size={18} />
             <span>Settings</span>
           </NavLink>
         </nav>
@@ -131,14 +165,14 @@ const AdminDashboard = () => {
         {showScrollTop && (
           <button
             onClick={scrollToTop}
-            className="flex items-center p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-auto mb-3"
+            className="flex items-center p-3 md:p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-auto mb-3 text-sm md:text-base"
           >
             <ChevronUp
-              size={20}
-              className="mr-3 text-black group-hover:scale-125 transition-transform"
+              size={18}
+              className="mr-2 md:mr-3 text-black group-hover:scale-125 transition-transform"
             />
             <span className="font-black text-black uppercase tracking-tight">
-              Scroll Top ⬆
+              Top ⬆
             </span>
           </button>
         )}
@@ -146,11 +180,11 @@ const AdminDashboard = () => {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="flex items-center p-4 rounded-2xl border-4 border-black bg-accent-red shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-4"
+          className="flex items-center p-3 md:p-4 rounded-2xl border-4 border-black bg-accent-red shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-4 text-sm md:text-base"
         >
           <LogOut
-            size={20}
-            className="mr-3 text-white group-hover:rotate-12 transition-transform"
+            size={18}
+            className="mr-2 md:mr-3 text-white group-hover:rotate-12 transition-transform"
           />
           <span className="font-black text-white uppercase tracking-tight">
             Sign Out! 🚪
@@ -159,26 +193,26 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-10">
-        <header className="flex justify-between items-center mb-10">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-10">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-10 gap-4">
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic text-3d-lg">
+            <h1 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase italic text-3d-lg">
               Hi, {user?.fullName?.split(" ")[0]}! 👋
             </h1>
-            <p className="text-slate-400 mt-2 font-bold text-lg underline decoration-4 decoration-accent-gold">
+            <p className="text-sm md:text-lg text-slate-400 mt-2 font-bold underline decoration-4 decoration-accent-gold">
               Ready to rule the academy today?
             </p>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="text-xl font-black text-white uppercase tracking-tighter text-3d">
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="text-right flex-1 md:flex-none">
+              <p className="text-base md:text-xl font-black text-white uppercase tracking-tighter text-3d truncate">
                 {user?.fullName}
               </p>
-              <p className="text-sm font-bold text-accent-red uppercase tracking-widest">
+              <p className="text-xs md:text-sm font-bold text-accent-red uppercase tracking-widest">
                 {user?.role} Mode
               </p>
             </div>
-            <div className="w-16 h-16 bg-slate-800 border-4 border-black rounded-3xl flex items-center justify-center font-black text-2xl shadow-cartoon transform rotate-3 text-white">
+            <div className="w-12 md:w-16 h-12 md:h-16 bg-slate-800 border-4 border-black rounded-3xl flex items-center justify-center font-black text-lg md:text-2xl shadow-cartoon transform rotate-3 text-white flex-shrink-0">
               {user?.fullName?.charAt(0)}
             </div>
           </div>

@@ -17,6 +17,8 @@ import {
   Save,
   UserCircle,
   ChevronUp,
+  Menu,
+  X,
 } from "lucide-react";
 import AcademicBackground from "../components/AcademicBackground";
 
@@ -24,6 +26,7 @@ const TeacherDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -61,91 +64,192 @@ const TeacherDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#0f172a] relative overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen bg-[#0f172a] relative overflow-hidden">
       <AcademicBackground />
+
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center justify-between bg-slate-900 border-b-4 border-black p-4 sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <LayoutDashboard size={24} className="text-accent-gold" />
+          <h1 className="text-lg font-black text-white uppercase">Teacher Hub</h1>
+        </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 hover:bg-slate-800 rounded-lg"
+        >
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 md:hidden z-30"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className="w-72 bg-slate-900 border-r-4 border-black p-8 flex flex-col shadow-cartoon relative z-10 overflow-y-auto">
-        <div className="flex items-center gap-3 mb-12">
+      <div
+        className={`fixed md:relative md:flex w-64 md:w-72 h-[calc(100vh-64px)] md:h-screen bg-slate-900 border-r-4 border-black p-4 md:p-8 flex flex-col shadow-cartoon z-40 overflow-y-auto transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+      >
+        <div className="hidden md:flex items-center gap-3 mb-8 md:mb-12">
           <div className="w-12 h-12 bg-accent-gold border-4 border-black rounded-2xl flex items-center justify-center shadow-cartoon-sm transform rotate-3">
             <LayoutDashboard size={24} className="text-black" />
           </div>
-          <h2 className="text-2xl font-black tracking-tighter uppercase italic text-white text-3d">
+          <h2 className="text-xl md:text-2xl font-black tracking-tighter uppercase italic text-white text-3d">
             Teacher <span className="text-accent-red">Hub</span>
           </h2>
         </div>
-        <nav className="space-y-4">
+        <nav className="space-y-3 md:space-y-4">
           <NavLink
             to="/teacher"
             end
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <LayoutDashboard className="mr-3" size={20} />
+            <LayoutDashboard className="mr-2 md:mr-3" size={18} />
             <span>Dashboard</span>
           </NavLink>
           {user?.isFormTeacher && (
             <NavLink
               to="/teacher/register-student"
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-red/20" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
+                `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-red/20" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
               }
             >
-              <UserPlus className="mr-3" size={20} />
+              <UserPlus className="mr-2 md:mr-3" size={18} />
               <span>Register</span>
             </NavLink>
           )}
           <NavLink
             to="/teacher/record-results"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <FileText className="mr-3" size={20} />
+            <FileText className="mr-2 md:mr-3" size={18} />
             <span>Results</span>
           </NavLink>
           <NavLink
             to="/teacher/release-results"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <Unlock className="mr-3" size={20} />
+            <Unlock className="mr-2 md:mr-3" size={18} />
             <span>Release</span>
           </NavLink>
           <NavLink
             to="/broadsheet"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <FileSpreadsheet className="mr-3" size={20} />
+            <FileSpreadsheet className="mr-2 md:mr-3" size={18} />
             <span>Broadsheet</span>
           </NavLink>
           {user?.isFormTeacher && (
             <NavLink
               to="/teacher/attendance"
+              onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-red/20" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
+                `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-red/20" : "border-transparent hover:border-black hover:bg-accent-red/10"}`
               }
             >
-              <CheckCircle className="mr-3" size={20} />
+              <CheckCircle className="mr-2 md:mr-3" size={18} />
               <span>Attendance</span>
             </NavLink>
           )}
           <NavLink
             to="/teacher/settings"
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) =>
-              `flex items-center p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
+              `flex items-center p-3 md:p-4 rounded-2xl border-4 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base ${isActive ? "border-black bg-accent-gold/30" : "border-transparent hover:border-black hover:bg-accent-gold/20"}`
             }
           >
-            <Settings className="mr-3" size={20} />
+            <Settings className="mr-2 md:mr-3" size={18} />
             <span>Settings</span>
           </NavLink>
         </nav>
         {/* Scroll to Top Button in Sidebar */}
         {showScrollTop && (
           <button
+            onClick={scrollToTop}
+            className="flex items-center p-3 md:p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-auto mb-3 text-sm md:text-base"
+          >
+            <ChevronUp
+              size={18}
+              className="mr-2 md:mr-3 text-black group-hover:scale-125 transition-transform"
+            />
+            <span className="font-black text-black uppercase tracking-tight">
+              Top ⬆
+            </span>
+          </button>
+        )}
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center p-3 md:p-4 rounded-2xl border-4 border-black bg-accent-red shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-4 text-sm md:text-base"
+        >
+          <LogOut
+            size={18}
+            className="mr-2 md:mr-3 text-white group-hover:rotate-12 transition-transform"
+          />
+          <span className="font-black text-white uppercase tracking-tight">
+            Sign Out! 🚪
+          </span>
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-10">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-10 gap-4">
+          <div>
+            <h1 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase italic text-3d-lg">
+              Hi, {user?.fullName?.split(" ")[0]}! 👋
+            </h1>
+            <p className="text-sm md:text-lg text-slate-400 mt-2 font-bold underline decoration-4 decoration-accent-gold">
+              Ready to teach and inspire?
+            </p>
+          </div>
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="text-right flex-1 md:flex-none">
+              <p className="text-base md:text-xl font-black text-white uppercase tracking-tighter text-3d truncate">
+                {user?.fullName}
+              </p>
+              <p className="text-xs md:text-sm font-bold text-accent-red uppercase tracking-widest">
+                {user?.role} Mode
+              </p>
+            </div>
+            <div className="w-12 md:w-16 h-12 md:h-16 bg-slate-800 border-4 border-black rounded-3xl flex items-center justify-center font-black text-lg md:text-2xl shadow-cartoon transform rotate-3 text-white flex-shrink-0">
+              {user?.fullName?.charAt(0)}
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-6xl">
+          <Routes>
+            <Route path="/" element={<TeacherOverview user={user} />} />
+            {user?.isFormTeacher && (
+              <Route path="/register-student" element={<RegisterStudent />} />
+            )}
+            <Route path="/record-results" element={<RecordResults />} />
+            <Route path="/release-results" element={<ReleaseResults />} />
+            <Route path="/attendance" element={<AttendanceManagement />} />
+            <Route path="/settings" element={<TeacherSettings />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
             onClick={scrollToTop}
             className="flex items-center p-4 rounded-2xl border-4 border-black bg-accent-gold shadow-cartoon-sm hover:-translate-y-1 transition-all group mt-4"
           >
