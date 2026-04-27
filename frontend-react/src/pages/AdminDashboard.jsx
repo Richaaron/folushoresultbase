@@ -1274,13 +1274,23 @@ const StudentList = () => {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="btn-cartoon-primary w-full py-4 text-lg bg-accent-gold flex items-center justify-center gap-2"
-              >
-                <Sparkles size={20} />
-                Enroll Legend! 🚀
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="btn-cartoon-secondary w-full py-4 text-lg border-4 border-black bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-black dark:text-white flex items-center justify-center gap-2 font-black"
+                >
+                  <X size={20} />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-cartoon-primary w-full py-4 text-lg bg-accent-gold flex items-center justify-center gap-2"
+                >
+                  <Sparkles size={20} />
+                  Enroll Legend! 🚀
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -1447,13 +1457,23 @@ const StudentList = () => {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="btn-cartoon-primary w-full py-6 text-2xl bg-accent-gold flex items-center justify-center gap-3"
-              >
-                <Save size={28} />
-                Save Changes! ✨
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setEditingStudent(null)}
+                  className="btn-cartoon-secondary w-full py-4 text-lg border-4 border-black bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-black dark:text-white flex items-center justify-center gap-2 font-black"
+                >
+                  <X size={20} />
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-cartoon-primary w-full py-6 text-2xl bg-accent-gold flex items-center justify-center gap-3"
+                >
+                  <Save size={28} />
+                  Save Changes! ✨
+                </button>
+              </div>
             </form>
           </div>
         </div>
