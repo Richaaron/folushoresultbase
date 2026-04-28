@@ -164,6 +164,44 @@ async function sendTestEmail(to) {
   return sendEmail(to, subject, html);
 }
 
+/**
+ * Send activity notification to admin
+ */
+async function sendActivityNotificationEmail(to, teacherId, activity) {
+  const User = require("../models/User");
+  const teacher = await User.findByPk(teacherId);
+  
+  const severityColors = {
+    LOW: "#4CAF50",
+    MEDIUM: "#FF9800",
+    HIGH: "#F44336",
+    CRITICAL: "#8B0000",
+  };
+
+  const subject = `[${activity.severity}] Teacher Activity Alert - ${teacher?.fullName || `ID: ${teacherId}`}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: ${severityColors[activity.severity]};">⚠️ Teacher Activity Alert</h2>
+      
+      <div style="background-color: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px; border-left: 4px solid ${severityColors[activity.severity]};">
+        <p><strong>Teacher:</strong> ${teacher?.fullName || `ID: ${teacherId}`}</p>
+        <p><strong>Activity Type:</strong> ${activity.activityType}</p>
+        <p><strong>Severity:</strong> <span style="color: ${severityColors[activity.severity]}; font-weight: bold;">${activity.severity}</span></p>
+        <p><strong>Time:</strong> ${new Date(activity.createdAt).toLocaleString()}</p>
+        <p><strong>IP Address:</strong> ${activity.ipAddress || 'Unknown'}</p>
+        ${activity.affectedResource ? `<p><strong>Affected Resource:</strong> ${activity.affectedResource}</p>` : ''}
+        ${activity.description ? `<p><strong>Description:</strong> ${activity.description}</p>` : ''}
+      </div>
+
+      <p style="color: #666; font-size: 14px;">
+        <strong>Note:</strong> This is an automated alert. Please review the activity in the admin dashboard for more details.
+      </p>
+    </div>
+  `;
+
+  return sendEmail(to, subject, html);
+}
+
 module.exports = {
   sendEmail,
   sendWelcomeEmail,
@@ -171,4 +209,5 @@ module.exports = {
   sendAttendanceAlert,
   sendPasswordResetEmail,
   sendTestEmail,
+  sendActivityNotificationEmail,
 };

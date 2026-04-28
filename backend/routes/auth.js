@@ -7,6 +7,7 @@ const { auth } = require("../middleware/auth");
 const { validate, schemas } = require("../middleware/validation");
 const { asyncHandler } = require("../middleware/errorHandler");
 const logger = require("../utils/logger");
+const { logActivity } = require("../utils/activityTracker");
 
 router.post("/login", validate(schemas.login), asyncHandler(async (req, res) => {
   const { username, password } = req.body;
@@ -24,6 +25,22 @@ router.post("/login", validate(schemas.login), asyncHandler(async (req, res) => 
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
     expiresIn: "24h",
   });
+
+  // Log login activity for teachers
+  if (user.role === "TEACHER") {
+    try {
+      await logActivity(
+        user.id,
+        "LOGIN",
+        `Teacher ${user.fullName} logged in`,
+        req,
+        null,
+        "LOW"
+      );
+    } catch (error) {
+      logger.warn(`Failed to log login activity: ${error.message}`);
+    }
+  }
 
   res.json({
     token,

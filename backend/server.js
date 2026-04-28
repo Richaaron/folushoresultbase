@@ -11,6 +11,8 @@ const { authLimiter, apiLimiter } = require('./utils/rateLimiter');
 const User = require('./models/User');
 const Subject = require('./models/Subject');
 require('./models/StudentSubject'); // Initialize many-to-many relationship
+require('./models/Message'); // Initialize Message model
+require('./models/ActivityLog'); // Initialize ActivityLog model
 
 // Validate environment variables
 validateEnv();
@@ -74,6 +76,8 @@ app.use('/api/results', require('./routes/results'));
 app.use('/api/attendance', require('./routes/attendance'));
 app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/settings', require('./routes/settings'));
+app.use('/api/messages', require('./routes/messages'));
+app.use('/api/activities', require('./routes/activities'));
 
 const { auth, authorize } = require('./middleware/auth');
 

@@ -7,6 +7,7 @@ const Student = require("../models/Student");
 const Subject = require("../models/Subject");
 const { sendResultsNotification } = require("../utils/emailService");
 const logger = require("../utils/logger");
+const { logActivity } = require("../utils/activityTracker");
 
 // ---------- helpers ----------
 const calculateGrade = (total) => {
@@ -61,6 +62,23 @@ router.post("/", auth, authorize(["ADMIN", "TEACHER"]), async (req, res) => {
         grade,
         remark: remark !== undefined ? remark : existing.remark,
       });
+
+      // Log update activity for teachers
+      if (req.user.role === "TEACHER") {
+        try {
+          await logActivity(
+            req.user.id,
+            "UPDATE_RESULT",
+            `Updated result for student ${studentId} in subject ${subjectId}`,
+            req,
+            `Result ID: ${existing.id}`,
+            "MEDIUM"
+          );
+        } catch (error) {
+          logger.warn(`Failed to log activity: ${error.message}`);
+        }
+      }
+
       return res.send(existing);
     }
 
@@ -77,6 +95,22 @@ router.post("/", auth, authorize(["ADMIN", "TEACHER"]), async (req, res) => {
       grade,
       remark,
     });
+
+    // Log create activity for teachers
+    if (req.user.role === "TEACHER") {
+      try {
+        await logActivity(
+          req.user.id,
+          "CREATE_RESULT",
+          `Created result for student ${studentId} in subject ${subjectId}`,
+          req,
+          `Result ID: ${result.id}`,
+          "MEDIUM"
+        );
+      } catch (error) {
+        logger.warn(`Failed to log activity: ${error.message}`);
+      }
+    }
 
     res.status(201).send(result);
   } catch (error) {
@@ -206,7 +240,28 @@ router.delete(
       const result = await Result.findByPk(req.params.id);
       if (!result) return res.status(404).send({ error: "Result not found" });
 
+      const resultId = result.id;
+      const studentId = result.StudentId;
+      const subjectId = result.SubjectId;
+
       await result.destroy();
+
+      // Log delete activity for teachers
+      if (req.user.role === "TEACHER") {
+        try {
+          await logActivity(
+            req.user.id,
+            "DELETE_RESULT",
+            `Deleted result for student ${studentId} in subject ${subjectId}`,
+            req,
+            `Result ID: ${resultId}`,
+            "HIGH"
+          );
+        } catch (error) {
+          logger.warn(`Failed to log activity: ${error.message}`);
+        }
+      }
+
       res.send({ message: "Result deleted successfully" });
     } catch (error) {
       console.error("DELETE /results/:id error:", error);
