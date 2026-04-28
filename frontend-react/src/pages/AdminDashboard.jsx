@@ -28,8 +28,12 @@ import {
   Save,
   Lock,
   Menu,
+  MessageCircle,
+  Activity,
 } from "lucide-react";
 import AcademicBackground from "../components/AcademicBackground";
+import AdminTeacherChat from "../components/AdminTeacherChat";
+import ActivityTracker from "../components/ActivityTracker";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -37,6 +41,8 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [showActivityTracker, setShowActivityTracker] = useState(false);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -159,6 +165,32 @@ const AdminDashboard = () => {
             <Settings className="mr-2 md:mr-3" size={18} />
             <span>Settings</span>
           </NavLink>
+
+          {/* Divider */}
+          <div className="my-4 border-t-2 border-slate-700"></div>
+
+          {/* Chat & Activity Buttons */}
+          <button
+            onClick={() => {
+              setShowChat(true);
+              setSidebarOpen(false);
+            }}
+            className="w-full flex items-center p-3 md:p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-gold/20 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base"
+          >
+            <MessageCircle className="mr-2 md:mr-3" size={18} />
+            <span>Chat 💬</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setShowActivityTracker(true);
+              setSidebarOpen(false);
+            }}
+            className="w-full flex items-center p-3 md:p-4 rounded-2xl border-4 border-transparent hover:border-black hover:bg-accent-red/10 transition-all group font-black uppercase tracking-tight text-white text-sm md:text-base"
+          >
+            <Activity className="mr-2 md:mr-3" size={18} />
+            <span>Activity 📊</span>
+          </button>
         </nav>
 
         {/* Scroll to Top Button */}
@@ -191,6 +223,12 @@ const AdminDashboard = () => {
           </span>
         </button>
       </div>
+
+      {/* Modals */}
+      {showChat && <AdminTeacherChat onClose={() => setShowChat(false)} />}
+      {showActivityTracker && (
+        <ActivityTracker onClose={() => setShowActivityTracker(false)} />
+      )}
 
       {/* Main Content */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-10">
