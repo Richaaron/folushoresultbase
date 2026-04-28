@@ -142,6 +142,43 @@ app.get('/api/health/detailed', asyncHandler(async (req, res) => {
   res.json(checks);
 }));
 
+// Test email endpoint (for configuration verification)
+app.post('/api/test-email', asyncHandler(async (req, res) => {
+  const { to } = req.body;
+
+  if (!to) {
+    return res.status(400).json({ 
+      error: 'Email address required', 
+      message: 'Please provide a "to" email address in request body' 
+    });
+  }
+
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+    return res.status(400).json({ 
+      error: 'Email not configured', 
+      message: 'EMAIL_USER and EMAIL_PASSWORD environment variables not set' 
+    });
+  }
+
+  try {
+    const { sendTestEmail } = require('./utils/emailService');
+    await sendTestEmail(to);
+    res.json({ 
+      status: 'success',
+      message: 'Test email sent successfully',
+      sentTo: to,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Test email failed:', error);
+    res.status(500).json({ 
+      status: 'error',
+      error: 'Failed to send test email',
+      message: error.message
+    });
+  }
+}));
+
 // Error handling middleware (must be last)
 app.use((req, res) => {
   res.status(404).json({
