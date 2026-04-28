@@ -24,13 +24,14 @@ router.post("/register", auth, authorize(["ADMIN"]), async (req, res) => {
       ? assignedSubject.join(", ")
       : assignedSubject;
 
-    // Generate username from full name (lowercase, no spaces) + random suffix
+    // Generate username with @folusho.com domain
     const baseUsername = fullName.toLowerCase().replace(/\s+/g, "");
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const username = `teacher_${baseUsername}${randomSuffix}`;
+    const username = `${baseUsername}${randomSuffix}@folusho.com`;
 
-    // Generate random 8-character password
-    const password = Math.random().toString(36).slice(-8);
+    // Generate password with fvs@ prefix + random numbers
+    const randomNumbers = Math.floor(10000 + Math.random() * 90000);
+    const password = `fvs@${randomNumbers}`;
     const hashedPassword = await bcrypt.hash(password, 8);
 
     const teacher = await User.create({
