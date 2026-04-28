@@ -265,7 +265,7 @@ const Broadsheet = () => {
       ]),
       "Total",
       "Average",
-    ];}
+    ];
 
     const rows = sortedData.map((student) => {
       const positions = {};
@@ -637,20 +637,17 @@ const Broadsheet = () => {
               </div>
             </div>
           </div>
-        ) : (
-          !loading &&
-          studentClass && (
-            <div className="cartoon-card bg-slate-900 p-20 text-center border-4 border-dashed border-black/20">
-              <FileSpreadsheet
-                size={64}
-                className="mx-auto text-white/10 mb-6"
-              />
-              <p className="text-2xl font-black text-white/20 uppercase italic tracking-widest">
-                No results found for this selection!
-              </p>
-            </div>
-          )
-        )}
+        ) : !loading && studentClass ? (
+          <div className="cartoon-card bg-slate-900 p-20 text-center border-4 border-dashed border-black/20">
+            <FileSpreadsheet
+              size={64}
+              className="mx-auto text-white/10 mb-6"
+            />
+            <p className="text-2xl font-black text-white/20 uppercase italic tracking-widest">
+              No results found for this selection!
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
