@@ -98,10 +98,49 @@ app.post('/api/init', asyncHandler(async (req, res) => {
   res.json({ message: 'Database initialized successfully', status: 'success' });
 }));
 
-// Health check endpoint
+// Health check endpoint (detailed)
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    database: {
+      connected: sequelize ? 'connected' : 'disconnected'
+    },
+    memoryUsage: process.memoryUsage()
+  });
 });
+
+// Comprehensive health check for deployment verification
+app.get('/api/health/detailed', asyncHandler(async (req, res) => {
+  const checks = {
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    nodeVersion: process.version,
+    database: {
+      connected: false,
+      message: 'Checking...'
+    },
+    environment_variables: {
+      database: !!process.env.DATABASE_URL,
+      jwt: !!process.env.JWT_SECRET,
+      frontend_url: !!process.env.FRONTEND_URL
+    }
+  };
+
+  try {
+    // Test database connection
+    const result = await sequelize.query('SELECT 1 as connected');
+    checks.database.connected = result[0] !== undefined;
+    checks.database.message = 'Connected successfully';
+  } catch (error) {
+    checks.database.message = error.message;
+  }
+
+  res.json(checks);
+}));
 
 // Error handling middleware (must be last)
 app.use((req, res) => {

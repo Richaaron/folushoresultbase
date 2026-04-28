@@ -5,6 +5,8 @@ const { auth, authorize } = require("../middleware/auth");
 const Result = require("../models/Result");
 const Student = require("../models/Student");
 const Subject = require("../models/Subject");
+const { sendResultsNotification } = require("../utils/emailService");
+const logger = require("../utils/logger");
 
 // ---------- helpers ----------
 const calculateGrade = (total) => {
@@ -211,6 +213,89 @@ router.delete(
       res.status(500).send(error);
     }
   },
+);
+
+// ---------- POST /release-results — Release results and send notifications ----------
+router.post(
+  "/release-results",
+  auth,
+  authorize(["ADMIN", "TEACHER"]),
+  async (req, res) => {
+    try {
+      const { studentClass, term, academicYear } = req.body;
+
+      if (!studentClass || !term || !academicYear) {
+        return res.status(400).send({
+          error: "Class, term, and academic year are required",
+        });
+      }
+
+      // Get all students in the class
+      const students = await Student.findAll({
+        where: { studentClass },
+        include: [
+          {
+            model: Result,
+            where: { term, academicYear },
+            required: true,
+            include: [Subject],
+          },
+        ],
+      });
+
+      if (students.length === 0) {
+        return res.status(404).send({
+          error: "No students with results found in this class",
+        });
+      }
+
+      let emailsSent = 0;
+      let emailsFailed = 0;
+
+      // Send notifications to parents and update results released flag
+      for (const student of students) {
+        if (student.parent && student.parent.email && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+          try {
+            const resultsLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/results`;
+            await sendResultsNotification(
+              student.parent.email,
+              student.parent.fullName,
+              studentClass,
+              resultsLink
+            );
+            emailsSent++;
+            logger.info(
+              `Results notification sent to parent: ${student.parent.email}`
+            );
+          } catch (emailError) {
+            emailsFailed++;
+            logger.warn(
+              `Failed to send results notification to ${student.parent.email}: ${emailError.message}`
+            );
+          }
+        }
+      }
+
+      // Update results released flag for all students in the class
+      await Student.update(
+        { resultsReleased: true },
+        { where: { studentClass } }
+      );
+
+      res.json({
+        message: "Results released successfully",
+        studentsCount: students.length,
+        emailsSent,
+        emailsFailed,
+        class: studentClass,
+        term,
+        academicYear,
+      });
+    } catch (error) {
+      console.error("POST /release-results error:", error);
+      res.status(500).send(error);
+    }
+  }
 );
 
 module.exports = router;

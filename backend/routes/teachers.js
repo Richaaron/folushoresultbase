@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const { auth, authorize } = require("../middleware/auth");
 const User = require("../models/User");
+const { sendWelcomeEmail } = require("../utils/emailService");
+const logger = require("../utils/logger");
 
 // Register a new teacher (Admin only)
 router.post("/register", auth, authorize(["ADMIN"]), async (req, res) => {
@@ -43,6 +45,17 @@ router.post("/register", auth, authorize(["ADMIN"]), async (req, res) => {
       assignedSubject: formattedSubject,
       profileImage,
     });
+
+    // Send welcome email if email is provided and notifications are enabled
+    if (email && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+      try {
+        await sendWelcomeEmail(email, fullName, password);
+        logger.info(`Welcome email sent to teacher: ${email}`);
+      } catch (emailError) {
+        logger.warn(`Failed to send welcome email to ${email}: ${emailError.message}`);
+        // Don't fail the registration if email fails
+      }
+    }
 
     res.status(201).send({
       teacher: {

@@ -9,10 +9,11 @@ const Student = require('../models/Student');
 const User = require('../models/User');
 const Subject = require('../models/Subject');
 const logger = require('../utils/logger');
+const { sendWelcomeEmail } = require('../utils/emailService');
 
 // Create student with auto-generated parent account
 router.post('/', auth, authorize(['ADMIN', 'TEACHER']), validate(schemas.createStudent), asyncHandler(async (req, res) => {
-  const { firstName, lastName, registrationNumber, studentClass, subjectIds, profileImage } = req.body;
+  const { firstName, lastName, registrationNumber, studentClass, subjectIds, profileImage, parentEmail } = req.body;
 
   // Check if student already exists
   const existing = await Student.findOne({ where: { registrationNumber } });
@@ -28,6 +29,7 @@ router.post('/', auth, authorize(['ADMIN', 'TEACHER']), validate(schemas.createS
     username: `parent_${registrationNumber}`,
     password: hashedPassword,
     fullName: `Parent of ${firstName} ${lastName}`,
+    email: parentEmail || null,
     role: 'PARENT'
   });
 
@@ -44,6 +46,17 @@ router.post('/', auth, authorize(['ADMIN', 'TEACHER']), validate(schemas.createS
     await student.setSubjects(subjectIds);
   }
 
+  // Send welcome email to parent if email is provided and notifications are enabled
+  if (parentEmail && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    try {
+      await sendWelcomeEmail(parentEmail, `Parent of ${firstName} ${lastName}`, parentPassword);
+      logger.info(`Welcome email sent to parent: ${parentEmail}`);
+    } catch (emailError) {
+      logger.warn(`Failed to send welcome email to parent ${parentEmail}: ${emailError.message}`);
+      // Don't fail the student creation if email fails
+    }
+  }
+
   logger.info({ studentId: student.id, registrationNumber, action: 'student_created' });
 
   res.status(201).json({ 
@@ -51,6 +64,7 @@ router.post('/', auth, authorize(['ADMIN', 'TEACHER']), validate(schemas.createS
     parentCredentials: { 
       username: `parent_${registrationNumber}`, 
       password: parentPassword,
+      email: parentEmail || 'Not provided',
       note: 'Share these credentials with the parent securely'
     } 
   });
