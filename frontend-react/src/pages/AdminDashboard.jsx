@@ -882,8 +882,8 @@ const StudentList = () => {
     api.get("/students/subjects").then((res) => setSubjects(res.data));
   };
 
-  const getSubjectsForClass = () => {
-    if (!formData.studentClass) return subjects;
+  const getSubjectsByClass = (className) => {
+    if (!className) return subjects;
     
     const classToLevel = {
       "Pre-Nursery": { level: "General", category: "Primary" },
@@ -903,21 +903,12 @@ const StudentList = () => {
       "SSS 3": { level: "Senior", category: "Secondary" },
     };
 
-    const classInfo = classToLevel[formData.studentClass];
+    const classInfo = classToLevel[className];
     if (!classInfo) return subjects;
 
-    let filtered = subjects.filter(
+    return subjects.filter(
       (s) => s.category === classInfo.category && s.level === classInfo.level
     );
-
-    // For Senior Secondary with a section: show core subjects (no section) + section-specific subjects
-    if (["SSS 1", "SSS 2", "SSS 3"].includes(formData.studentClass) && formData.section) {
-      filtered = filtered.filter(
-        (s) => !s.section || s.section === formData.section
-      );
-    }
-
-    return filtered;
   };
 
   const getGroupedSubjects = (subjectList) => {
@@ -1385,11 +1376,11 @@ const StudentList = () => {
                     <label className="text-xs font-semibold text-black dark:text-slate-300 uppercase tracking-tight">
                       Subjects {formData.subjectIds.length > 0 && <span className="text-blue-500">({formData.subjectIds.length} selected)</span>}
                     </label>
-                    {getSubjectsForClass().length > 0 && (
+                    {getSubjectsByClass(formData.studentClass).length > 0 && (
                       <div className="flex gap-2">
                         <button
                           type="button"
-                          onClick={() => setFormData((prev) => ({ ...prev, subjectIds: getSubjectsForClass().map((s) => s.id) }))}
+                          onClick={() => setFormData((prev) => ({ ...prev, subjectIds: getSubjectsByClass(formData.studentClass).map((s) => s.id) }))}
                           className="text-[9px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-700 border border-blue-300 rounded px-2 py-0.5"
                         >
                           Select All
@@ -1409,14 +1400,14 @@ const StudentList = () => {
                     <div className="p-4 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-lg text-center text-xs font-bold text-gray-400 uppercase tracking-widest">
                       Select a class first to see subjects
                     </div>
-                  ) : getSubjectsForClass().length === 0 ? (
+                  ) : getSubjectsByClass(formData.studentClass).length === 0 ? (
                     <div className="p-4 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-lg text-center text-xs font-bold text-gray-400 uppercase tracking-widest">
                       No subjects found for this class/section
                     </div>
                   ) : (
                     <div className="space-y-3 p-3 border-2 border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-800">
                       {["SSS 1", "SSS 2", "SSS 3"].includes(formData.studentClass)
-                        ? Object.entries(getGroupedSubjects(getSubjectsForClass())).map(([section, subs]) => (
+                        ? Object.entries(getGroupedSubjects(getSubjectsByClass(formData.studentClass))).map(([section, subs]) => (
                             <div key={section} className="space-y-2">
                               <h4 className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-200 dark:border-blue-800 pb-1">
                                 {section}
@@ -1441,7 +1432,7 @@ const StudentList = () => {
                           ))
                         : (
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {getSubjectsForClass().map((sub) => (
+                            {getSubjectsByClass(formData.studentClass).map((sub) => (
                               <button
                                 key={sub.id}
                                 type="button"
@@ -1665,13 +1656,10 @@ const StudentList = () => {
                   </label>
                   <div className="space-y-3 p-3 border-2 border-gray-300 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-800 max-h-48 overflow-y-auto">
                     {editingStudent.studentClass && ["SSS 1", "SSS 2", "SSS 3"].includes(editingStudent.studentClass)
-                      ? Object.entries(getGroupedSubjects(editingStudent.section 
-                          ? subjects.filter(s => s.category === "Secondary" && s.level === "Senior" && s.section === editingStudent.section)
-                          : subjects.filter(s => s.category === "Secondary" && s.level === "Senior")
-                        )).map(([section, subs]) => (
+                      ? Object.entries(getGroupedSubjects(getSubjectsByClass(editingStudent.studentClass))).map(([section, subs]) => (
                           <div key={section} className="space-y-2">
-                            <h4 className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">
-                              {section} Section
+                            <h4 className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest border-b border-blue-200 dark:border-blue-800 pb-1">
+                              {section}
                             </h4>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                               {subs.map((sub) => (
@@ -1695,7 +1683,7 @@ const StudentList = () => {
                         ))
                       : (
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            {subjects.map((sub) => (
+                            {getSubjectsByClass(editingStudent.studentClass).map((sub) => (
                               <button
                                 key={sub.id}
                                 type="button"
