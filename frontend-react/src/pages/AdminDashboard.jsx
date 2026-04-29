@@ -919,6 +919,8 @@ const StudentList = () => {
     });
     return grouped;
   };
+
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
