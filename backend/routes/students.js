@@ -114,13 +114,13 @@ router.get('/subjects', auth, asyncHandler(async (req, res) => {
 
 // Create new subject
 router.post('/subjects', auth, authorize(['ADMIN']), asyncHandler(async (req, res) => {
-  const { name, category, level } = req.body;
+  const { name, category, level, section } = req.body;
   
   if (!name || !category) {
     return res.status(400).json({ error: 'Name and category are required' });
   }
 
-  const subject = await Subject.create({ name, category, level });
+  const subject = await Subject.create({ name, category, level, section: section || null });
   res.status(201).json(subject);
 }));
 
