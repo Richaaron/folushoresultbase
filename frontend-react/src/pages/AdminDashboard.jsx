@@ -1799,6 +1799,7 @@ const SubjectList = () => {
     name: "",
     category: "Primary",
     level: "General",
+    section: "",
   });
   const [message, setMessage] = useState("");
 
@@ -1815,7 +1816,7 @@ const SubjectList = () => {
     try {
       await api.post("/students/subjects", newSubject);
       setMessage("Subject added to the vault! 📚");
-      setNewSubject({ name: "", category: "Primary", level: "General" });
+      setNewSubject({ name: "", category: "Primary", level: "General", section: "" });
       setShowAddModal(false);
       fetchSubjects();
       setTimeout(() => setMessage(""), 3000);
@@ -1911,7 +1912,11 @@ const SubjectList = () => {
                   className="input-cartoon w-full"
                   value={newSubject.level}
                   onChange={(e) =>
-                    setNewSubject({ ...newSubject, level: e.target.value })
+                    setNewSubject({
+                      ...newSubject,
+                      level: e.target.value,
+                      section: e.target.value !== "Senior" ? "" : newSubject.section,
+                    })
                   }
                 >
                   <option value="Beginner">Beginner</option>
@@ -1920,6 +1925,30 @@ const SubjectList = () => {
                   <option value="Senior">Senior</option>
                 </select>
               </div>
+
+              {/* Section — only for Secondary Senior */}
+              {newSubject.category === "Secondary" && newSubject.level === "Senior" && (
+                <div className="space-y-2">
+                  <label className="text-sm font-black text-black dark:text-slate-300 uppercase tracking-widest">
+                    Section 📂
+                  </label>
+                  <select
+                    className="input-cartoon w-full"
+                    value={newSubject.section}
+                    onChange={(e) =>
+                      setNewSubject({ ...newSubject, section: e.target.value })
+                    }
+                  >
+                    <option value="">All Sections (Core)</option>
+                    <option value="Science">Science</option>
+                    <option value="Art">Art</option>
+                    <option value="Commercial">Commercial</option>
+                  </select>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    Leave as "All Sections" for subjects shared across all senior sections.
+                  </p>
+                </div>
+              )}
               <button
                 type="submit"
                 className="btn-cartoon-primary w-full py-4 text-lg"
@@ -1950,6 +1979,16 @@ const SubjectList = () => {
               <span className="bg-accent-gold border-2 border-black px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest">
                 {sub.level}
               </span>
+              {sub.section && (
+                <span className="bg-blue-500 text-white border-2 border-black px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest">
+                  {sub.section}
+                </span>
+              )}
+              {!sub.section && sub.level === "Senior" && sub.category === "Secondary" && (
+                <span className="bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-2 border-black px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest">
+                  Core
+                </span>
+              )}
             </div>
           </div>
         ))}
