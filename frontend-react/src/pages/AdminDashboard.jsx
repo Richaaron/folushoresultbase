@@ -1569,20 +1569,6 @@ const StudentList = () => {
                       }
                     />
                   </div>
-                    <label className="text-sm font-black text-black dark:text-slate-300 uppercase tracking-widest">
-                      Parent Email 📧
-                    </label>
-                    <input
-                      type="email"
-                      className="input-cartoon w-full"
-                      placeholder="parent@example.com"
-                      value={editingStudent.parentEmail || ""}
-                      onChange={(e) =>
-                        setEditingStudent({
-                          ...editingStudent,
-                          parentEmail: e.target.value,
-                        })
-                      }
                 </div>
 
                 <div className="md:col-span-2 space-y-2">
