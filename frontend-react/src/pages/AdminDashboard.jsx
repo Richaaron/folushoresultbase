@@ -720,62 +720,62 @@ const AdminOverview = () => {
   return (
     <div className="space-y-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        <div className="cartoon-card p-8 cartoon-card-hover group bg-accent-gold/20 dark:bg-accent-gold/10">
-          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center mb-6 shadow-cartoon-sm group-hover:scale-110 transition-transform">
-            <Users size={28} className="text-black dark:text-white" />
+        <div className="cartoon-card p-6 cartoon-card-hover group bg-accent-gold/20 dark:bg-accent-gold/10">
+          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-xl flex items-center justify-center mb-4 shadow-cartoon-sm group-hover:scale-110 transition-transform">
+            <Users size={20} className="text-black dark:text-white" />
           </div>
-          <h3 className="text-black dark:text-slate-300 uppercase text-sm font-black tracking-widest mb-2 italic">
+          <h3 className="text-black dark:text-slate-300 uppercase text-xs md:text-sm font-black tracking-widest mb-1 italic">
             Total Legends
           </h3>
-          <p className="text-6xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
+          <p className="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
             {stats.studentCount}
           </p>
-          <div className="mt-4 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-xs font-black uppercase tracking-tighter dark:text-slate-300">
+          <div className="mt-3 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-[10px] font-black uppercase tracking-tighter dark:text-slate-300">
             Students ⚡
           </div>
         </div>
 
-        <div className="cartoon-card p-8 cartoon-card-hover group bg-accent-red/20 dark:bg-accent-red/10">
-          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center mb-6 shadow-cartoon-sm group-hover:scale-110 transition-transform">
-            <BookOpen size={28} className="text-black dark:text-white" />
+        <div className="cartoon-card p-6 cartoon-card-hover group bg-accent-red/20 dark:bg-accent-red/10">
+          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-xl flex items-center justify-center mb-4 shadow-cartoon-sm group-hover:scale-110 transition-transform">
+            <BookOpen size={20} className="text-black dark:text-white" />
           </div>
-          <h3 className="text-black dark:text-slate-300 uppercase text-sm font-black tracking-widest mb-2 italic">
+          <h3 className="text-black dark:text-slate-300 uppercase text-xs md:text-sm font-black tracking-widest mb-1 italic">
             Knowledge Cubes
           </h3>
-          <p className="text-6xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
+          <p className="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
             {stats.subjectCount}
           </p>
-          <div className="mt-4 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-xs font-black uppercase tracking-tighter dark:text-slate-300">
+          <div className="mt-3 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-[10px] font-black uppercase tracking-tighter dark:text-slate-300">
             Subjects 📚
           </div>
         </div>
 
-        <div className="cartoon-card p-8 cartoon-card-hover group bg-accent-gold/20 dark:bg-accent-gold/10">
-          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center mb-6 shadow-cartoon-sm group-hover:scale-110 transition-transform">
-            <UserCircle size={28} className="text-black dark:text-white" />
+        <div className="cartoon-card p-6 cartoon-card-hover group bg-accent-gold/20 dark:bg-accent-gold/10">
+          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-xl flex items-center justify-center mb-4 shadow-cartoon-sm group-hover:scale-110 transition-transform">
+            <UserCircle size={20} className="text-black dark:text-white" />
           </div>
-          <h3 className="text-black dark:text-slate-300 uppercase text-sm font-black tracking-widest mb-2 italic">
+          <h3 className="text-black dark:text-slate-300 uppercase text-xs md:text-sm font-black tracking-widest mb-1 italic">
             Educators
           </h3>
-          <p className="text-6xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
+          <p className="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
             {stats.teacherCount}
           </p>
-          <div className="mt-4 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-xs font-black uppercase tracking-tighter dark:text-slate-300">
+          <div className="mt-3 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-[10px] font-black uppercase tracking-tighter dark:text-slate-300">
             Teachers 🍎
           </div>
         </div>
 
-        <div className="cartoon-card p-8 cartoon-card-hover group bg-accent-gold/10 dark:bg-accent-gold/5">
-          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-2xl flex items-center justify-center mb-6 shadow-cartoon-sm group-hover:scale-110 transition-transform">
-            <Sparkles size={28} className="text-black dark:text-white" />
+        <div className="cartoon-card p-6 cartoon-card-hover group bg-accent-gold/10 dark:bg-accent-gold/5">
+          <div className="w-10 h-10 bg-slate-50 dark:bg-slate-800 border-4 border-black rounded-xl flex items-center justify-center mb-4 shadow-cartoon-sm group-hover:scale-110 transition-transform">
+            <Sparkles size={20} className="text-black dark:text-white" />
           </div>
-          <h3 className="text-black dark:text-slate-300 uppercase text-sm font-black tracking-widest mb-2 italic">
+          <h3 className="text-black dark:text-slate-300 uppercase text-xs md:text-sm font-black tracking-widest mb-1 italic">
             System Health
           </h3>
-          <p className="text-6xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
+          <p className="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tighter text-3d-lg">
             100%
           </p>
-          <div className="mt-4 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-xs font-black uppercase tracking-tighter dark:text-slate-300">
+          <div className="mt-3 inline-flex items-center px-3 py-1 bg-slate-50 dark:bg-slate-800 border-2 border-black rounded-full text-[10px] font-black uppercase tracking-tighter dark:text-slate-300">
             All Systems Go! 🚀
           </div>
         </div>
